@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Riaz Khan</title>
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231a1410'/><text y='72' x='50' text-anchor='middle' font-size='60' font-family='Georgia,serif' fill='%23e8621a'>R</text></svg>"/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:         #131210;
+      --surface:    #1c1a15;
+      --card:       #211f18;
+      --border:     #33301f;
+      --mid:        #7a7060;
+      --light:      #c8bfaa;
+      --white:      #f0ece3;
+      --orange:     #e8621a;
+      --orange-dim: rgba(232,98,26,0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* SCROLL PROGRESS */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      width: 0%;
+      background: var(--orange);
+      z-index: 9998;
+      transition: width 0.1s linear;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.4rem 3rem;
+      background: rgba(19,18,16,0.75);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.12em;
+      color: var(--white);
+      text-decoration: none;
+      z-index: 101;
+    }
+
+    .nav-logo span { color: var(--orange); }
+
+    nav ul { list-style: none; display: flex; gap: 2.5rem; }
+
+    nav a {
+      text-decoration: none;
+      color: rgba(240,236,227,0.75);
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+
+    nav a:hover { color: var(--orange); }
+
+    /* HAMBURGER */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      z-index: 101;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 1.5px;
+      background: var(--white);
+      transition: transform 0.35s ease, opacity 0.35s ease;
+    }
+
+    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(19,18,16,0.97);
+      z-index: 99;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+    }
+
+    .mobile-menu.open { display: flex; }
+
+    .mobile-menu a {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      letter-spacing: 0.1em;
+      color: var(--white);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .mobile-menu a:hover { color: var(--orange); }
+
+    @media (max-width: 768px) {
+      nav ul { display: none; }
+      .hamburger { display: flex; }
+    }
+
+    /* ── HERO WITH VIDEO ── */
+    #hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* The actual video element */
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    /* Dark overlay so text stays readable */
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(19,18,16,0.55) 0%, rgba(19,18,16,0.35) 50%, rgba(19,18,16,0.75) 100%),
+        rgba(19,18,16,0.2);
+    }
+
+    /* Subtle orange tint to tie into colour scheme */
+    .hero-overlay::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(232,98,26,0.07) 0%, transparent 70%);
+    }
+
+    .hero-rule {
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      height: 30%;
+      background: linear-gradient(to bottom, transparent, var(--orange));
+      opacity: 0.5;
+      z-index: 2;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 3;
+      padding: 0 1.5rem;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.3s forwards;
+    }
+
+    .hero-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(6rem, 15vw, 13rem);
+      line-height: 0.88;
+      letter-spacing: 0.04em;
+      color: var(--white);
+      text-shadow: 0 4px 40px rgba(0,0,0,0.6);
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.5s forwards;
+    }
+
+    .hero-name .last { color: var(--orange); }
+
+    .hero-tagline {
+      margin-top: 2rem;
+      font-size: 1rem;
+      color: rgba(240,236,227,0.75);
+      letter-spacing: 0.08em;
+      min-height: 1.5em;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.75s forwards;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1em;
+      background: var(--orange);
+      margin-left: 3px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .hero-cta {
+      margin-top: 3rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: var(--orange);
+      font-size: 0.78rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      border: 1px solid rgba(232,98,26,0.5);
+      padding: 0.85rem 2rem;
+      backdrop-filter: blur(8px);
+      background: rgba(19,18,16,0.3);
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 1s forwards;
+    }
+
+    .hero-cta:hover {
+      background: var(--orange);
+      color: var(--bg);
+      border-color: var(--orange);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SECTIONS */
+    section { padding: 7rem 0; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 2.5rem; }
+
+    .section-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 0.8rem;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 600;
+      line-height: 1.1;
+      margin-bottom: 3.5rem;
+      color: var(--white);
+    }
+
+    .divider { width: 100%; height: 1px; background: var(--border); margin: 7rem 0 0; }
+
+    /* ABOUT */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+    .about-text { font-size: 1.05rem; line-height: 1.85; color: var(--light); }
+    .about-text p + p { margin-top: 1.2rem; }
+
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+
+    .stat-box { border: 1px solid var(--border); padding: 1.5rem; background: var(--card); }
+
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.8rem;
+      color: var(--orange);
+      line-height: 1;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-label { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); margin-top: 0.4rem; }
+
+    /* TIMELINE */
+    .timeline { display: flex; flex-direction: column; }
+    .timeline-item { display: grid; grid-template-columns: 160px 1px 1fr; gap: 0 2rem; padding-bottom: 3rem; }
+    .timeline-date { font-size: 0.75rem; color: var(--orange); letter-spacing: 0.08em; text-transform: uppercase; padding-top: 0.15rem; text-align: right; }
+    .timeline-spine { display: flex; flex-direction: column; align-items: center; }
+    .spine-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); flex-shrink: 0; }
+    .spine-line { flex: 1; width: 1px; background: var(--border); margin-top: 4px; }
+    .timeline-item:last-child .spine-line { display: none; }
+    .timeline-role { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--white); margin-bottom: 0.3rem; }
+    .timeline-org { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); margin-bottom: 0.9rem; }
+    .timeline-desc { font-size: 0.9rem; color: var(--light); line-height: 1.75; }
+    .timeline-desc li { margin-bottom: 0.3rem; padding-left: 0.3rem; }
+    .timeline-desc li::marker { color: var(--orange); }
+
+    /* EDUCATION */
+    .edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .edu-card { border: 1px solid var(--border); padding: 2rem; background: var(--card); transition: border-color 0.3s; }
+    .edu-card:hover { border-color: var(--orange); }
+    .edu-level { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.6rem; }
+    .edu-qual { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; color: var(--white); margin-bottom: 0.4rem; }
+    .edu-school { font-size: 0.8rem; color: var(--mid); margin-bottom: 0.8rem; }
+    .edu-grade { font-size: 0.85rem; color: var(--light); }
+
+    /* SKILLS */
+    .skills-wrap { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+    .skill-tag {
+      padding: 0.5rem 1.1rem;
+      border: 1px solid var(--border);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      color: var(--light);
+      transition: border-color 0.3s, color 0.3s, background 0.3s;
+      cursor: default;
+    }
+    .skill-tag:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-dim); }
+
+    /* CERTS */
+    .cert-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .cert-item { border: 1px solid var(--border); padding: 1.2rem 1.4rem; background: var(--card); font-size: 0.82rem; color: var(--light); line-height: 1.4; transition: border-color 0.3s; }
+    .cert-item:hover { border-color: var(--orange); }
+    .cert-item::before { content: '✦'; color: var(--orange); font-size: 0.65rem; display: block; margin-bottom: 0.5rem; }
+
+    /* AWARD */
+    .award-banner { border: 1px solid rgba(232,98,26,0.35); background: var(--orange-dim); padding: 2rem 2.5rem; display: flex; align-items: center; gap: 2rem; margin-bottom: 3rem; }
+    .award-icon { font-size: 2.5rem; flex-shrink: 0; }
+    .award-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; color: var(--orange); margin-bottom: 0.3rem; }
+    .award-desc { font-size: 0.85rem; color: var(--light); line-height: 1.6; }
+
+    /* HOBBIES */
+    .hobbies-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
+    .hobby-card { border: 1px solid var(--border); background: var(--card); padding: 1.8rem 1rem; text-align: center; transition: border-color 0.3s, background 0.3s; cursor: default; }
+    .hobby-card:hover { border-color: var(--orange); background: var(--orange-dim); }
+    .hobby-icon { font-size: 1.8rem; margin-bottom: 0.7rem; }
+    .hobby-name { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--light); }
+
+    /* CONTACT */
+    #contact { text-align: center; padding: 7rem 0 5rem; border-top: 1px solid var(--border); }
+    .contact-link { display: inline-flex; align-items: center; gap: 0.7rem; text-decoration: none; color: var(--white); font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; letter-spacing: 0.08em; border: 1px solid var(--border); padding: 1rem 2.5rem; margin-top: 2.5rem; transition: border-color 0.3s, color 0.3s, background 0.3s; }
+    .contact-link:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-dim); }
+    .linkedin-icon { width: 18px; height: 18px; fill: currentColor; }
+
+    footer { text-align: center; padding: 2rem; font-size: 0.72rem; letter-spacing: 0.1em; color: var(--mid); border-top: 1px solid var(--border); }
+
+    /* SCROLL REVEAL */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .edu-grid { grid-template-columns: 1fr; }
+      .cert-grid { grid-template-columns: 1fr 1fr; }
+      .timeline-item { grid-template-columns: 80px 1px 1fr; }
+      .timeline-date { font-size: 0.62rem; }
+      .hobbies-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 480px) {
+      .cert-grid { grid-template-columns: 1fr; }
+      .hobbies-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress-bar"></div>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#about"      onclick="closeMenu()">About</a>
+    <a href="#experience" onclick="closeMenu()">Experience</a>
+    <a href="#education"  onclick="closeMenu()">Education</a>
+    <a href="#skills"     onclick="closeMenu()">Skills</a>
+    <a href="#contact"    onclick="closeMenu()">Contact</a>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#hero" class="nav-logo">R<span>.</span>K</a>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <!-- Video — file must be named bg.mp4 and in the same folder as index.html -->
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="bg.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+    <div class="hero-rule"></div>
+
+    <div class="hero-content">
+      <p class="hero-eyebrow">Speech &amp; Language Therapy Student</p>
+      <h1 class="hero-name">Riaz<br><span class="last">Khan</span></h1>
+      <p class="hero-tagline">
+        <span id="typed-text"></span><span class="cursor"></span>
+      </p>
+      <a href="#about" class="hero-cta">Explore ↓</a>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">Who I Am</p>
+        <h2 class="section-title">Driven by communication,<br>grounded in action.</h2>
+      </div>
+      <div class="about-grid reveal">
+        <div class="about-text">
+          <p>I'm Riaz Khan — a motivated student currently studying Speech and Language Therapy, with a genuine passion for communication, helping others, and making an impact.</p>
+          <p>From volunteering in cafeterias and charity shops to organising fundraising events, I've built real-world experience across healthcare, finance, and community settings. I bring energy, reliability, and a strong team ethic to everything I do.</p>
+          <p>I was also recognised with the prestigious Jack Petchey Speak Out Award — an honour awarded for outstanding public speaking and the ability to inspire others.</p>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-box"><div class="stat-num">9</div><div class="stat-label">GCSEs (Grades 6–9)</div></div>
+          <div class="stat-box"><div class="stat-num">3</div><div class="stat-label">A-Levels Completed</div></div>
+          <div class="stat-box"><div class="stat-num">12+</div><div class="stat-label">Certifications</div></div>
+          <div class="stat-box"><div class="stat-num">5+</div><div class="stat-label">Volunteering Roles</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">What I've Done</p>
+        <h2 class="section-title">Experience &amp; Achievements</h2>
+      </div>
+
+      <div class="award-banner reveal">
+        <div class="award-icon">🏆</div>
+        <div>
+          <div class="award-title">Jack Petchey Speak Out Award</div>
+          <div class="award-desc">Recognised for outstanding public speaking and communication — demonstrating the ability to inspire, motivate, and lead an audience with confidence and clarity.</div>
+        </div>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-item reveal">
+          <div class="timeline-date">Volunteering</div>
+          <div class="timeline-spine"><div class="spine-dot"></div><div class="spine-line"></div></div>
+          <div class="timeline-body">
+            <div class="timeline-role">Volunteer Cashier</div>
+            <div class="timeline-org">School Cafeteria</div>
+            <ul class="timeline-desc">
+              <li>Handled cash and card payments accurately during high-pressure lunch hours.</li>
+              <li>Delivered friendly, efficient service to students and staff.</li>
+              <li>Maintained a clean, organised serving area to support smooth daily operations.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-date">Community</div>
+          <div class="timeline-spine"><div class="spine-dot"></div><div class="spine-line"></div></div>
+          <div class="timeline-body">
+            <div class="timeline-role">Event Organiser</div>
+            <div class="timeline-org">Family Charity Fundraiser</div>
+            <ul class="timeline-desc">
+              <li>Set up and ran a community stall, engaging attendees and promoting the cause.</li>
+              <li>Designed multilingual flyers to raise awareness of child poverty and improve outreach inclusivity.</li>
+              <li>Managed donations and coordinated team effort to ensure a smooth event.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-date">Retail</div>
+          <div class="timeline-spine"><div class="spine-dot"></div><div class="spine-line"></div></div>
+          <div class="timeline-body">
+            <div class="timeline-role">Shop Volunteer</div>
+            <div class="timeline-org">Charity Shop</div>
+            <ul class="timeline-desc">
+              <li>Served customers at the till, handled payments, sorted and priced donated stock.</li>
+              <li>Supported daily operations including stock rotation and backroom organisation.</li>
+              <li>Followed safeguarding and health &amp; safety procedures with reliability and attention to detail.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-date">Healthcare</div>
+          <div class="timeline-spine"><div class="spine-dot"></div><div class="spine-line"></div></div>
+          <div class="timeline-body">
+            <div class="timeline-role">Work Experience</div>
+            <div class="timeline-org">Silicon Dental Centre</div>
+            <ul class="timeline-desc">
+              <li>Observed day-to-day operations in a professional healthcare environment.</li>
+              <li>Gained understanding of confidentiality, clear communication, and patient-focused professionalism.</li>
+              <li>Developed awareness of workplace etiquette in a regulated, high-standards setting.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-date">Finance &amp; Business</div>
+          <div class="timeline-spine"><div class="spine-dot"></div><div class="spine-line"></div></div>
+          <div class="timeline-body">
+            <div class="timeline-role">Career Insight Programmes</div>
+            <div class="timeline-org">Barclays · IBM · Lloyds · Linklaters · BDO</div>
+            <ul class="timeline-desc">
+              <li>Completed industry insight programmes in Finance, Data Analytics, Law, and Accounting.</li>
+              <li>Built transferable skills in organisation, problem-solving, and professional communication.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">Academic Background</p>
+        <h2 class="section-title">Education</h2>
+      </div>
+      <div class="edu-grid reveal">
+        <div class="edu-card">
+          <div class="edu-level">University</div>
+          <div class="edu-qual">Speech &amp; Language Therapy</div>
+          <div class="edu-school">Currently Studying</div>
+          <div class="edu-grade">Undergraduate Degree — In Progress</div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-level">A-Levels</div>
+          <div class="edu-qual">Graphics · Economics · Business</div>
+          <div class="edu-school">Twyford Church of England</div>
+          <div class="edu-grade">Grades: A · B · B</div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-level">GCSEs</div>
+          <div class="edu-qual">9 GCSEs</div>
+          <div class="edu-school">Ada Lovelace Church of England High School</div>
+          <div class="edu-grade">Grades 6–9 · Including Maths &amp; English</div>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">What I Bring</p>
+        <h2 class="section-title">Skills</h2>
+      </div>
+      <div class="skills-wrap reveal">
+        <span class="skill-tag">Communication</span>
+        <span class="skill-tag">Public Speaking</span>
+        <span class="skill-tag">Customer Service</span>
+        <span class="skill-tag">Teamwork</span>
+        <span class="skill-tag">Problem Solving</span>
+        <span class="skill-tag">Decision Making</span>
+        <span class="skill-tag">Organisation</span>
+        <span class="skill-tag">Adaptability</span>
+        <span class="skill-tag">Attention to Detail</span>
+        <span class="skill-tag">Event Planning</span>
+        <span class="skill-tag">Cash Handling</span>
+        <span class="skill-tag">Active Listening</span>
+        <span class="skill-tag">Leadership</span>
+        <span class="skill-tag">Multilingual Outreach</span>
+        <span class="skill-tag">Health &amp; Safety Awareness</span>
+        <span class="skill-tag">Graphic Design</span>
+        <span class="skill-tag">Data Analytics (IBM)</span>
+        <span class="skill-tag">Self-Discipline</span>
+      </div>
+
+      <div style="margin-top:4rem" class="reveal">
+        <p class="section-label">Certifications</p>
+        <h2 class="section-title" style="font-size:2rem;margin-bottom:2rem">Credentials</h2>
+        <div class="cert-grid">
+          <div class="cert-item">Analysing Big Data with Spreadsheet UI<br><span style="color:var(--mid);font-size:0.72rem">IBM SkillsBuild</span></div>
+          <div class="cert-item">Build Your Own Chatbot<br><span style="color:var(--mid);font-size:0.72rem">IBM SkillsBuild</span></div>
+          <div class="cert-item">Barclays: Finance<br><span style="color:var(--mid);font-size:0.72rem">Career Insight</span></div>
+          <div class="cert-item">Barclays: Data Analytics<br><span style="color:var(--mid);font-size:0.72rem">Career Insight</span></div>
+          <div class="cert-item">Lloyds Banking Group Careers Live<br><span style="color:var(--mid);font-size:0.72rem">Finance Insight</span></div>
+          <div class="cert-item">Insight to Linklaters<br><span style="color:var(--mid);font-size:0.72rem">Law</span></div>
+          <div class="cert-item">Law Subject Spotlight<br><span style="color:var(--mid);font-size:0.72rem">Legal</span></div>
+          <div class="cert-item">City Century Law<br><span style="color:var(--mid);font-size:0.72rem">Legal</span></div>
+          <div class="cert-item">Get into Accounting<br><span style="color:var(--mid);font-size:0.72rem">Finance</span></div>
+          <div class="cert-item">Insight to BDO<br><span style="color:var(--mid);font-size:0.72rem">Accounting &amp; Advisory</span></div>
+          <div class="cert-item">Health Science Online Event<br><span style="color:var(--mid);font-size:0.72rem">Healthcare</span></div>
+          <div class="cert-item">Full Driving Licence<br><span style="color:var(--mid);font-size:0.72rem">DVLA</span></div>
+        </div>
+      </div>
+
+      <div style="margin-top:4rem" class="reveal">
+        <p class="section-label">Outside of Work</p>
+        <h2 class="section-title" style="font-size:2rem;margin-bottom:2rem">Hobbies &amp; Interests</h2>
+        <div class="hobbies-grid">
+          <div class="hobby-card"><div class="hobby-icon">⚽</div><div class="hobby-name">Football</div></div>
+          <div class="hobby-card"><div class="hobby-icon">🥊</div><div class="hobby-name">Boxing</div></div>
+          <div class="hobby-card"><div class="hobby-icon">♟️</div><div class="hobby-name">Chess</div></div>
+          <div class="hobby-card"><div class="hobby-icon">🎛️</div><div class="hobby-name">Beat Making</div></div>
+          <div class="hobby-card"><div class="hobby-icon">🎨</div><div class="hobby-name">Graphic Design</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container reveal">
+      <p class="section-label">Get In Touch</p>
+      <h2 class="section-title" style="margin-bottom:0.5rem">Let's connect.</h2>
+      <p style="color:var(--mid);font-size:0.9rem">Find me on LinkedIn and let's start a conversation.</p>
+      <a href="https://www.linkedin.com/in/riazkhan06" target="_blank" class="contact-link">
+        <svg class="linkedin-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+        </svg>
+        LinkedIn — /riazkhan06
+      </a>
+    </div>
+  </section>
+
+  <footer>© 2026 Riaz Khan · Built with code</footer>
+
+  <script>
+    // SCROLL PROGRESS
+    const bar = document.getElementById('progress-bar');
+    window.addEventListener('scroll', () => {
+      const total = document.body.scrollHeight - window.innerHeight;
+      bar.style.width = (window.scrollY / total * 100) + '%';
+    });
+
+    // HAMBURGER
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+      document.getElementById('hamburger').classList.toggle('open');
+    }
+    function closeMenu() {
+      document.getElementById('mobileMenu').classList.remove('open');
+      document.getElementById('hamburger').classList.remove('open');
+    }
+
+    // TYPING ANIMATION
+    const phrases = ['Communicator.', 'Public Speaker.', 'Award Winner.', 'Team Player.', 'Future Clinician.'];
+    let phraseIndex = 0, charIndex = 0, deleting = false;
+    const typedEl = document.getElementById('typed-text');
+
+    function type() {
+      const current = phrases[phraseIndex];
+      if (!deleting) {
+        typedEl.textContent = current.slice(0, charIndex + 1);
+        charIndex++;
+        if (charIndex === current.length) { deleting = true; setTimeout(type, 1800); return; }
+      } else {
+        typedEl.textContent = current.slice(0, charIndex - 1);
+        charIndex--;
+        if (charIndex === 0) { deleting = false; phraseIndex = (phraseIndex + 1) % phrases.length; }
+      }
+      setTimeout(type, deleting ? 60 : 100);
+    }
+    setTimeout(type, 1400);
+
+    // SCROLL REVEAL
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
