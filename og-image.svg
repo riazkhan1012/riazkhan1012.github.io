@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#131210"/>
+  <rect width="1200" height="630" fill="url(#grad)"/>
+  <defs>
+    <radialGradient id="grad" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#2e2416"/>
+      <stop offset="100%" stop-color="#131210"/>
+    </radialGradient>
+  </defs>
+  <!-- Accent line -->
+  <rect x="80" y="400" width="80" height="2" fill="#e8621a" opacity="0.7"/>
+  <!-- R.K logo -->
+  <text x="80" y="200" font-family="Georgia, serif" font-size="120" font-weight="bold" fill="#f0ece3" letter-spacing="4">R<tspan fill="#e8621a">.</tspan>K</text>
+  <!-- Name -->
+  <text x="80" y="300" font-family="Georgia, serif" font-size="52" font-weight="300" fill="#f0ece3" letter-spacing="6">RIAZ KHAN</text>
+  <!-- Tagline -->
+  <text x="80" y="360" font-family="Arial, sans-serif" font-size="22" fill="#7a7060" letter-spacing="4">SPEECH AND LANGUAGE THERAPY STUDENT</text>
+  <!-- University -->
+  <text x="80" y="430" font-family="Arial, sans-serif" font-size="20" fill="#e8621a" letter-spacing="2">University of Roehampton · East London</text>
+  <!-- Available badge -->
+  <rect x="80" y="470" width="460" height="42" rx="0" fill="none" stroke="#e8621a" stroke-width="1" opacity="0.5"/>
+  <text x="100" y="497" font-family="Arial, sans-serif" font-size="16" fill="#e8621a" letter-spacing="3">OPEN TO PART-TIME AND APPRENTICESHIP OPPORTUNITIES</text>
+</svg>
