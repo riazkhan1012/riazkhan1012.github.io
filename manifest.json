@@ -1,0 +1,28 @@
+{
+  "name": "Riaz's Food Map",
+  "short_name": "Food Map",
+  "description": "Riaz Khan's halal food map of London — 100+ spots, rated and reviewed.",
+  "start_url": "/#food-map",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#131210",
+  "theme_color": "#131210",
+  "lang": "en-GB",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%231a1410'/><text y='360' x='256' text-anchor='middle' font-size='340' font-family='Georgia,serif' fill='%23e8621a'>R</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["food", "lifestyle", "navigation"],
+  "shortcuts": [
+    {
+      "name": "Roll the Dice",
+      "short_name": "Random Spot",
+      "description": "Pick a random unvisited halal spot",
+      "url": "/#food-map"
+    }
+  ]
+}
