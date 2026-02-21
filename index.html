@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Riaz Khan | Speech and Language Therapy Student</title>
+
+  <meta name="description" content="Riaz Khan — BSc Speech and Language Therapy student at the University of Roehampton. Award-winning public speaker, content creator, West London. Open to part-time and apprenticeship opportunities."/>
+  <meta name="keywords" content="Riaz Khan, Speech Language Therapy, University of Roehampton, SLT student, Jack Petchey Award, Linklaters, Goldman Sachs, portfolio, West London"/>
+  <meta name="author" content="Riaz Khan"/>
+  <meta name="robots" content="index, follow"/>
+  <meta property="og:title" content="Riaz Khan | Speech and Language Therapy Student"/>
+  <meta property="og:description" content="First-year SLT student at Roehampton. Award-winning public speaker. Open to part-time and apprenticeship opportunities."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://riazkhan1012.github.io"/>
+  <meta property="og:locale" content="en_GB"/>
+  <meta property="og:image" content="https://riazkhan1012.github.io/og-image.svg"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Riaz Khan | Speech and Language Therapy Student"/>
+  <meta name="twitter:description" content="First-year SLT student at Roehampton. Open to part-time and apprenticeship opportunities."/>
+  <meta name="twitter:image" content="https://riazkhan1012.github.io/og-image.svg"/>
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231a1410'/><text y='72' x='50' text-anchor='middle' font-size='60' font-family='Georgia,serif' fill='%23e8621a'>R</text></svg>"/>
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-W3JZS9NB4Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-W3JZS9NB4Z');
+  </script>
+
+  <!-- Leaflet map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500&family=Noto+Sans+Bengali:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:         #131210;
+      --surface:    #1c1a15;
+      --card:       #211f18;
+      --border:     #33301f;
+      --mid:        #7a7060;
+      --light:      #c8bfaa;
+      --white:      #f0ece3;
+      --orange:     #e8621a;
+      --orange-dim: rgba(232,98,26,0.12);
+    }
+
+    body.light {
+      --bg:         #f6f3ee;
+      --surface:    #edeae3;
+      --card:       #ffffff;
+      --border:     #dbd7cc;
+      --mid:        #8a8070;
+      --light:      #3a3530;
+      --white:      #1a1814;
+      --orange:     #c94e12;
+      --orange-dim: rgba(201,78,18,0.1);
+    }
+
+    body.lang-bn { font-family: 'Noto Sans Bengali', 'DM Sans', sans-serif; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--white); font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; transition: background 0.4s, color 0.4s; }
+
+    /* PRINT */
+    @media print {
+      nav, #progress-bar, #back-to-top, .hero-video, .hero-overlay, .hero-rule,
+      .hamburger, .mobile-menu, .hero-cta, .filter-bar, #copyBtn, #food-map { display: none !important; }
+      #hero { height: auto !important; background: white !important; padding: 2rem 0 1rem; text-align: left; }
+      .hero-content { position: relative !important; }
+      .hero-name { font-size: 4rem !important; color: #1a1814 !important; text-shadow: none !important; opacity: 1 !important; }
+      .hero-name .last { color: #c94e12 !important; }
+      .hero-eyebrow, .hero-available, .hero-tagline { color: #555 !important; opacity: 1 !important; }
+      .hero-divider { background: #c94e12 !important; }
+      body { background: white !important; color: #1a1814 !important; }
+      .reveal { opacity: 1 !important; transform: none !important; }
+      .skill-group, .edu-card, .stat-box, .award-banner, .timeline-item, .hobby-card, .ref-card, .portfolio-card { break-inside: avoid; border-color: #ccc !important; background: white !important; }
+      section { padding: 2rem 0 !important; }
+      .divider { background: #ccc !important; height: 1px !important; margin: 1rem 0 !important; }
+      .section-label { color: #c94e12 !important; }
+      .section-title { color: #1a1814 !important; }
+      .timeline-date, .skill-category-title, .edu-level, .stat-num, .award-title { color: #c94e12 !important; }
+      .about-text, .timeline-desc, .hobby-desc, .ref-text { color: #3a3530 !important; }
+      footer { display: block !important; border-top: 1px solid #ccc; padding: 1rem; color: #777; }
+      .footer-links { display: none; }
+    }
+
+    /* SCROLL PROGRESS */
+    #progress-bar { position: fixed; top: 0; left: 0; height: 2px; width: 0%; background: var(--orange); z-index: 9998; transition: width 0.1s linear; }
+
+    /* MODALS */
+    .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 500; align-items: center; justify-content: center; padding: 2rem; }
+    .modal-backdrop.open { display: flex; }
+    .modal-box { background: var(--card); border: 1px solid var(--border); max-width: 560px; width: 100%; padding: 2.5rem; position: relative; max-height: 80vh; overflow-y: auto; }
+    .modal-box h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 600; color: var(--orange); margin-bottom: 1.2rem; }
+    .modal-box h3 { font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--orange); margin: 1.4rem 0 0.6rem; }
+    .modal-box p { font-size: 0.88rem; color: var(--light); line-height: 1.8; margin-bottom: 0.9rem; }
+    .modal-close { position: absolute; top: 1rem; right: 1.2rem; background: none; border: none; color: var(--mid); font-size: 1.4rem; cursor: pointer; transition: color 0.3s; }
+    .modal-close:hover { color: var(--orange); }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 3rem; background: rgba(19,18,16,0.82); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.05); gap: 1rem; transition: background 0.4s; }
+    body.light nav { background: rgba(246,243,238,0.9); border-bottom-color: var(--border); }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.12em; color: var(--white); text-decoration: none; z-index: 101; flex-shrink: 0; }
+    .nav-logo span { color: var(--orange); }
+    nav ul { list-style: none; display: flex; gap: 1.4rem; flex: 1; justify-content: center; }
+    nav a { text-decoration: none; color: var(--mid); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.3s; }
+    nav a:hover, nav a.active { color: var(--orange); }
+    .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex-shrink: 0; }
+    .nav-btn { background: none; border: 1px solid var(--border); color: var(--mid); font-size: 0.68rem; letter-spacing: 0.1em; cursor: pointer; padding: 0.35rem 0.7rem; transition: color 0.3s, border-color 0.3s; font-family: 'DM Sans', sans-serif; }
+    .nav-btn:hover, .nav-btn.active { color: var(--orange); border-color: var(--orange); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 101; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 1.5px; background: var(--white); transition: transform 0.35s, opacity 0.35s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    .mobile-menu { display: none; position: fixed; inset: 0; background: rgba(19,18,16,0.97); z-index: 99; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; }
+    body.light .mobile-menu { background: rgba(246,243,238,0.97); }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-family: 'Bebas Neue', sans-serif; font-size: 2.6rem; letter-spacing: 0.1em; color: var(--white); text-decoration: none; transition: color 0.3s; }
+    .mobile-menu a:hover { color: var(--orange); }
+    .mobile-controls { display: flex; gap: 0.6rem; margin-top: 1rem; }
+    @media (max-width: 900px) { nav ul { display: none; } .hamburger { display: flex; } .nav-controls { display: none; } }
+
+    /* HERO */
+    #hero { height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; }
+    .hero-video { position: absolute; inset: 0; width: 100%; height: 110%; object-fit: cover; object-position: center; will-change: transform; }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(19,18,16,0.6) 0%, rgba(19,18,16,0.3) 50%, rgba(19,18,16,0.8) 100%); }
+    .hero-overlay::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(232,98,26,0.07) 0%, transparent 70%); }
+    .hero-rule { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 1px; height: 28%; background: linear-gradient(to bottom, transparent, var(--orange)); opacity: 0.45; z-index: 2; }
+    .hero-content { position: relative; z-index: 3; padding: 0 1.5rem; }
+    .hero-available { display: inline-block; padding: 0.38rem 1rem; border: 1px solid rgba(232,98,26,0.45); background: rgba(232,98,26,0.09); font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--orange); margin-bottom: 1.2rem; opacity: 0; animation: fadeUp 0.8s ease 0.1s forwards; }
+    .hero-eyebrow { font-size: 0.72rem; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(240,236,227,0.7); margin-bottom: 1.2rem; opacity: 0; animation: fadeUp 0.8s ease 0.3s forwards; }
+    .hero-name { font-family: 'Bebas Neue', sans-serif; font-size: clamp(6rem, 15vw, 13rem); line-height: 0.88; letter-spacing: 0.04em; color: var(--white); text-shadow: 0 4px 40px rgba(0,0,0,0.5); opacity: 0; animation: fadeUp 0.9s ease 0.5s forwards; }
+    .hero-name .last { color: var(--orange); }
+    .hero-divider { width: 50px; height: 1px; background: var(--orange); margin: 1.8rem auto 1.6rem; opacity: 0; animation: fadeUp 0.9s ease 0.65s forwards; }
+    .hero-tagline { font-size: 1rem; color: rgba(240,236,227,0.72); letter-spacing: 0.08em; min-height: 1.5em; text-shadow: 0 2px 10px rgba(0,0,0,0.4); opacity: 0; animation: fadeUp 0.9s ease 0.8s forwards; }
+    .cursor { display: inline-block; width: 2px; height: 1em; background: var(--orange); margin-left: 3px; vertical-align: middle; animation: blink 1s step-end infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .hero-cta { margin-top: 2.5rem; display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--orange); font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; border: 1px solid rgba(232,98,26,0.45); padding: 0.85rem 2rem; backdrop-filter: blur(8px); background: rgba(19,18,16,0.25); transition: background 0.3s, color 0.3s, border-color 0.3s; opacity: 0; animation: fadeUp 0.9s ease 1s forwards; }
+    .hero-cta:hover { background: var(--orange); color: #111; border-color: var(--orange); }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* LAYOUT */
+    section { padding: 7rem 0; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 2.5rem; }
+    .section-label { font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.8rem; }
+    .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 600; line-height: 1.1; margin-bottom: 3.5rem; color: var(--white); }
+    .divider { width: 100%; height: 1px; background: linear-gradient(to right, transparent, var(--border) 20%, var(--border) 80%, transparent); margin: 4rem 0 0; }
+
+    /* ABOUT */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+    .about-text { font-size: 1rem; line-height: 1.9; color: var(--light); }
+    .about-text p + p { margin-top: 1.3rem; }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    .stat-box { border: 1px solid var(--border); padding: 1.5rem; background: var(--card); transition: border-color 0.3s; }
+    .stat-box:hover { border-color: var(--orange); }
+    .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; color: var(--orange); line-height: 1; letter-spacing: 0.05em; }
+    .stat-label { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); margin-top: 0.4rem; }
+
+    /* FILTER */
+    .filter-bar { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 3rem; }
+    .filter-btn { background: none; border: 1px solid var(--border); color: var(--mid); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.45rem 1rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: color 0.3s, border-color 0.3s, background 0.3s; }
+    .filter-btn:hover { color: var(--white); border-color: var(--white); }
+    .filter-btn.active { color: var(--orange); border-color: var(--orange); background: var(--orange-dim); }
+
+    /* TIMELINE */
+    .timeline { display: flex; flex-direction: column; }
+    .timeline-item { display: grid; grid-template-columns: 130px 1px 1fr; gap: 0 2rem; padding-bottom: 3rem; }
+    .timeline-item.hidden { display: none; }
+    .timeline-date { font-size: 0.68rem; color: var(--orange); letter-spacing: 0.06em; text-transform: uppercase; padding-top: 0.15rem; text-align: right; line-height: 1.6; }
+    .timeline-spine { display: flex; flex-direction: column; align-items: center; }
+    .spine-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); flex-shrink: 0; }
+    .spine-line { flex: 1; width: 1px; background: var(--border); margin-top: 4px; }
+    .timeline-item:last-child .spine-line { display: none; }
+    .timeline-role { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 600; color: var(--white); margin-bottom: 0.3rem; }
+    .timeline-org { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); margin-bottom: 0.9rem; }
+    .timeline-desc { font-size: 0.88rem; color: var(--light); line-height: 1.8; }
+    .timeline-desc li { margin-bottom: 0.35rem; padding-left: 0.3rem; }
+    .timeline-desc li::marker { color: var(--orange); }
+
+    /* EDUCATION */
+    .edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .edu-card { border: 1px solid var(--border); padding: 2rem; background: var(--card); transition: border-color 0.3s; }
+    .edu-card:hover { border-color: var(--orange); }
+    .edu-level { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.6rem; }
+    .edu-qual { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--white); margin-bottom: 0.4rem; }
+    .edu-school { font-size: 0.8rem; color: var(--mid); margin-bottom: 0.5rem; }
+    .edu-grade { font-size: 0.83rem; color: var(--light); }
+
+    /* SKILLS */
+    .skills-categories { display: flex; flex-direction: column; gap: 1.5rem; }
+    .skill-group { padding: 1.8rem; border: 1px solid var(--border); background: var(--card); }
+    .skill-category-title { font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--orange); margin-bottom: 1.1rem; padding-bottom: 0.7rem; border-bottom: 1px solid var(--border); }
+    .skills-wrap { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .skill-tag { padding: 0.42rem 0.95rem; border: 1px solid var(--border); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--light); background: var(--surface); transition: border-color 0.25s, color 0.25s, background 0.25s; cursor: default; }
+    .skill-tag:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-dim); }
+
+    /* CREDENTIALS */
+    .cert-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    a.cert-item { border: 1px solid var(--border); padding: 1.2rem 1.4rem; background: var(--card); font-size: 0.82rem; color: var(--light); line-height: 1.4; transition: border-color 0.3s, color 0.3s, background 0.3s; text-decoration: none; display: block; position: relative; }
+    a.cert-item:hover { border-color: var(--orange); background: var(--orange-dim); color: var(--white); }
+    a.cert-item::before { content: '✦'; color: var(--orange); font-size: 0.65rem; display: block; margin-bottom: 0.5rem; }
+    .cert-arrow { position: absolute; top: 0.9rem; right: 0.9rem; font-size: 0.7rem; color: var(--mid); transition: color 0.3s; }
+    a.cert-item:hover .cert-arrow { color: var(--orange); }
+    .cert-issuer { color: var(--mid); font-size: 0.72rem; display: block; margin-top: 0.25rem; }
+
+    /* AWARD */
+    .award-banner { border: 1px solid rgba(232,98,26,0.35); background: var(--orange-dim); padding: 2rem 2.5rem; display: flex; align-items: center; gap: 2rem; margin-bottom: 3rem; }
+    .award-icon { font-size: 2.5rem; flex-shrink: 0; }
+    .award-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; color: var(--orange); margin-bottom: 0.3rem; }
+    .award-desc { font-size: 0.85rem; color: var(--light); line-height: 1.6; }
+
+    /* PORTFOLIO */
+    .portfolio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .portfolio-card { border: 1px dashed var(--border); background: var(--card); padding: 2.8rem 1.5rem; text-align: center; transition: border-color 0.3s; }
+    .portfolio-card.filled { border-style: solid; cursor: pointer; }
+    .portfolio-card.filled:hover { border-color: var(--orange); }
+    .portfolio-icon { font-size: 2rem; margin-bottom: 1rem; opacity: 0.5; display: block; }
+    .portfolio-card.filled .portfolio-icon { opacity: 1; }
+    .portfolio-coming { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--mid); margin-bottom: 0.5rem; }
+    .portfolio-card.filled .portfolio-coming { color: var(--white); }
+    .portfolio-sub { font-size: 0.75rem; color: var(--mid); letter-spacing: 0.08em; }
+    .portfolio-card.filled .portfolio-sub { color: var(--light); margin-top: 0.4rem; }
+    .portfolio-note { margin-top: 2.5rem; text-align: center; font-size: 0.83rem; color: var(--mid); font-style: italic; }
+
+    /* INTERESTS */
+    .hobbies-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .hobby-card { border: 1px solid var(--border); background: var(--card); padding: 1.6rem 1rem 1.4rem; text-align: center; transition: border-color 0.3s, background 0.3s; cursor: default; }
+    .hobby-card:hover { border-color: var(--orange); background: var(--orange-dim); }
+    .hobby-icon { font-size: 1.6rem; margin-bottom: 0.65rem; display: block; }
+    .hobby-name { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; color: var(--white); display: block; margin-bottom: 0.4rem; }
+    .hobby-desc { font-size: 0.7rem; color: var(--mid); line-height: 1.45; }
+
+    /* REFERENCES */
+    .ref-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .ref-card { border: 1px solid var(--border); background: var(--card); padding: 2rem; transition: border-color 0.3s; }
+    .ref-card:hover { border-color: var(--orange); }
+    .ref-card.placeholder { border-style: dashed; }
+    .ref-quote-mark { font-family: 'Cormorant Garamond', serif; font-size: 3rem; color: var(--orange); line-height: 0.8; margin-bottom: 0.8rem; opacity: 0.6; }
+    .ref-text { font-size: 0.9rem; color: var(--light); line-height: 1.8; font-style: italic; margin-bottom: 1.4rem; }
+    .ref-name { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-weight: 600; color: var(--white); }
+    .ref-role { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); margin-top: 0.25rem; }
+    .ref-placeholder-text { font-size: 0.88rem; color: var(--mid); text-align: center; padding: 2rem 0; font-style: italic; }
+
+    /* FOOD MAP */
+    #food-map { padding: 7rem 0; }
+    #map { width: 100%; height: 540px; border: 1px solid var(--border); }
+    .map-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.2rem; }
+    .map-legend { display: flex; gap: 1.5rem; align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); }
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .legend-dot.visited  { background: #4caf82; box-shadow: 0 0 6px rgba(76,175,130,0.5); }
+    .legend-dot.wishlist { background: #e8621a; box-shadow: 0 0 6px rgba(232,98,26,0.5); }
+    .map-counter { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); }
+    .map-counter span { color: var(--orange); font-weight: 500; }
+    .map-filter-btns { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    .map-filter { background: none; border: 1px solid var(--border); color: var(--mid); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.35rem 0.85rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: color 0.25s, border-color 0.25s, background 0.25s; }
+    .map-filter:hover { color: var(--white); border-color: var(--white); }
+    .map-filter.active { color: var(--orange); border-color: var(--orange); background: var(--orange-dim); }
+    .leaflet-popup-content-wrapper { background: #211f18 !important; border: 1px solid #33301f !important; border-radius: 0 !important; box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important; color: #c8bfaa !important; }
+    .leaflet-popup-tip { background: #211f18 !important; }
+    .leaflet-popup-close-button { color: #7a7060 !important; font-size: 1.1rem !important; top: 8px !important; right: 10px !important; }
+    .leaflet-popup-close-button:hover { color: #e8621a !important; }
+    .map-popup-name { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 600; color: #f0ece3; margin-bottom: 0.25rem; }
+    .map-popup-meta { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: #7a7060; margin-bottom: 0.6rem; }
+    .map-popup-stars { font-size: 0.85rem; margin-bottom: 0.5rem; }
+    .map-popup-note { font-size: 0.82rem; color: #c8bfaa; line-height: 1.6; margin-bottom: 0.7rem; }
+    .map-popup-badge { display: inline-block; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.22rem 0.6rem; margin-bottom: 0.7rem; }
+    .map-popup-badge.visited  { background: rgba(76,175,130,0.15); color: #4caf82; border: 1px solid rgba(76,175,130,0.35); }
+    .map-popup-badge.wishlist { background: rgba(232,98,26,0.12); color: #e8621a; border: 1px solid rgba(232,98,26,0.35); }
+    .map-popup-link { display: inline-block; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: #e8621a; text-decoration: none; border: 1px solid rgba(232,98,26,0.4); padding: 0.3rem 0.7rem; transition: background 0.25s, color 0.25s; }
+    .map-popup-link:hover { background: #e8621a; color: #111; }
+
+    /* CONTACT */
+    #contact { text-align: center; padding: 7rem 0 5rem; border-top: 1px solid var(--border); }
+    .contact-options { display: flex; flex-direction: column; align-items: center; gap: 0.9rem; margin-top: 2.5rem; }
+    .contact-link-wrap { position: relative; width: 320px; }
+    .contact-link { display: inline-flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--light); font-size: 0.88rem; letter-spacing: 0.06em; border: 1px solid var(--border); padding: 0.9rem 2rem; width: 100%; transition: border-color 0.3s, color 0.3s, background 0.3s; background: var(--card); }
+    .contact-link:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-dim); }
+    .contact-icon { width: 18px; height: 18px; fill: currentColor; flex-shrink: 0; }
+    #copyBtn { position: absolute; right: 0.8rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--mid); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; padding: 0.3rem 0.5rem; transition: color 0.3s; font-family: 'DM Sans', sans-serif; }
+    #copyBtn:hover { color: var(--orange); }
+    #copyBtn.copied { color: var(--orange); }
+
+    /* FOOTER */
+    footer { text-align: center; padding: 1.8rem 2rem; font-size: 0.72rem; letter-spacing: 0.08em; color: var(--mid); border-top: 1px solid var(--border); line-height: 2; }
+    .footer-links { display: flex; justify-content: center; gap: 1.5rem; margin-top: 0.4rem; }
+    .footer-link { color: var(--mid); text-decoration: none; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.3s; cursor: pointer; }
+    .footer-link:hover { color: var(--orange); }
+
+    /* BACK TO TOP */
+    #back-to-top { position: fixed; bottom: 2rem; right: 2rem; width: 40px; height: 40px; background: var(--card); border: 1px solid var(--border); color: var(--orange); font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s, border-color 0.3s, background 0.3s; z-index: 50; }
+    #back-to-top.visible { opacity: 1; pointer-events: all; }
+    #back-to-top:hover { border-color: var(--orange); background: var(--orange-dim); }
+
+    /* SCROLL REVEAL */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) { .hobbies-grid { grid-template-columns: repeat(3, 1fr); } .portfolio-grid { grid-template-columns: repeat(2, 1fr); } .ref-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) { nav { padding: 1.1rem 1.5rem; } .about-grid { grid-template-columns: 1fr; gap: 2.5rem; } .edu-grid { grid-template-columns: 1fr; } .cert-grid { grid-template-columns: 1fr 1fr; } .timeline-item { grid-template-columns: 70px 1px 1fr; gap: 0 1.2rem; } .timeline-date { font-size: 0.6rem; } .hobbies-grid { grid-template-columns: repeat(2, 1fr); } .contact-link-wrap { width: 100%; max-width: 320px; } .award-banner { flex-direction: column; gap: 1rem; padding: 1.5rem; } #map { height: 400px; } }
+    @media (max-width: 480px) { .cert-grid { grid-template-columns: 1fr; } .portfolio-grid { grid-template-columns: 1fr; } .hobbies-grid { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+
+  <div id="progress-bar"></div>
+  <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+
+  <!-- PRIVACY MODAL -->
+  <div class="modal-backdrop" id="privacyModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('privacyModal')">✕</button>
+      <h2>Privacy Policy</h2>
+      <h3>What data is collected</h3>
+      <p>This website does not collect, store, or process any personal data. There are no cookies, tracking pixels, or advertising tools running on this site. Google Analytics is used in aggregate, anonymous form only to understand how the site is used overall.</p>
+      <h3>Contact enquiries</h3>
+      <p>If you contact Riaz Khan via email, your message is sent directly to his personal inbox. It is used only to respond to your enquiry and is not shared with any third party or stored in any system beyond your email provider and his inbox.</p>
+      <h3>External links</h3>
+      <p>This site contains links to LinkedIn, TikTok, and other third-party platforms. Once you click those links, you are subject to the privacy policies of those platforms. Riaz Khan has no control over and accepts no responsibility for their data practices.</p>
+      <h3>Cookies</h3>
+      <p>This website does not use its own cookies. Google Analytics may set anonymous measurement cookies. No personal data is collected through these.</p>
+      <h3>Changes to this policy</h3>
+      <p>This privacy policy may be updated from time to time. The date in the footer reflects when the site was last updated. Continued use of this site after changes constitutes acceptance of the updated policy.</p>
+      <h3>Contact</h3>
+      <p>If you have any questions about this privacy policy, contact Riaz Khan at <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="88fae9e3e0e9e6a6fde3c8efe5e9e1e4a6ebe7e5">[email&#160;protected]</a>.</p>
+    </div>
+  </div>
+
+  <!-- TERMS MODAL -->
+  <div class="modal-backdrop" id="termsModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('termsModal')">✕</button>
+      <h2>Terms of Use</h2>
+      <h3>Ownership</h3>
+      <p>This website and all its contents — including text, design, layout, and structure — are the intellectual property of Riaz Khan unless otherwise stated. All rights reserved.</p>
+      <h3>Permitted use</h3>
+      <p>You may view this website for personal, non-commercial purposes. You may share a link to this site freely. You may not copy, reproduce, republish, or redistribute any content from this site without prior written permission from Riaz Khan.</p>
+      <h3>Accuracy of information</h3>
+      <p>Riaz Khan makes reasonable efforts to keep the information on this site accurate and up to date. However, no warranty is given as to the completeness or accuracy of any content. Riaz Khan reserves the right to update or remove content at any time without notice.</p>
+      <h3>External links</h3>
+      <p>This site links to third-party platforms such as LinkedIn and TikTok. These links are provided for convenience only. Riaz Khan does not endorse and is not responsible for the content or practices of any linked websites.</p>
+      <h3>Disclaimer</h3>
+      <p>This website is a personal portfolio intended for professional networking and informational purposes only. Nothing on this site constitutes professional legal, medical, or financial advice.</p>
+      <h3>Governing law</h3>
+      <p>These terms are governed by the laws of England and Wales. Any disputes arising from use of this site will be subject to the exclusive jurisdiction of the courts of England and Wales.</p>
+      <h3>Acceptance</h3>
+      <p>By using this website you agree to these terms of use. If you do not agree, please leave the site.</p>
+    </div>
+  </div>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#about"      onclick="closeMenu()">About</a>
+    <a href="#experience" onclick="closeMenu()">Experience</a>
+    <a href="#education"  onclick="closeMenu()">Education</a>
+    <a href="#skills"     onclick="closeMenu()">Skills</a>
+    <a href="#portfolio"  onclick="closeMenu()">Portfolio</a>
+    <a href="#references" onclick="closeMenu()">References</a>
+    <a href="#food-map"   onclick="closeMenu()">Food Map</a>
+    <a href="#contact"    onclick="closeMenu()">Contact</a>
+    <div class="mobile-controls">
+      <button class="nav-btn" onclick="toggleTheme()" id="themeBtn2">☀ Light</button>
+      <button class="nav-btn" onclick="toggleLang()" id="langBtn2">BN</button>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#hero" class="nav-logo">R<span>.</span>K</a>
+    <ul>
+      <li><a href="#about"      data-section="about">About</a></li>
+      <li><a href="#experience" data-section="experience">Experience</a></li>
+      <li><a href="#education"  data-section="education">Education</a></li>
+      <li><a href="#skills"     data-section="skills">Skills</a></li>
+      <li><a href="#portfolio"  data-section="portfolio">Portfolio</a></li>
+      <li><a href="#references" data-section="references">References</a></li>
+      <li><a href="#food-map"   data-section="food-map">Food Map</a></li>
+      <li><a href="#contact"    data-section="contact">Contact</a></li>
+    </ul>
+    <div class="nav-controls">
+      <button class="nav-btn" onclick="toggleTheme()" id="themeBtn">☀ Light</button>
+      <button class="nav-btn" onclick="toggleLang()" id="langBtn">BN</button>
+    </div>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <video class="hero-video" id="heroVideo" autoplay muted loop playsinline>
+      <source src="bg.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+    <div class="hero-rule"></div>
+    <div class="hero-content">
+      <div class="hero-available">Open to Part-Time and Apprenticeship Opportunities</div>
+      <p class="hero-eyebrow">Speech and Language Therapy Student</p>
+      <h1 class="hero-name">Riaz<br><span class="last">Khan</span></h1>
+      <div class="hero-divider"></div>
+      <p class="hero-tagline"><span id="typed-text"></span><span class="cursor"></span></p>
+      <a href="#about" class="hero-cta">Explore ↓</a>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">Who I Am</p>
+        <h2 class="section-title">Driven by communication,<br>grounded in action.</h2>
+      </div>
+      <div class="about-grid reveal">
+        <div class="about-text">
+          <p>I'm Riaz Khan, a first-year BSc Speech and Language Therapy student at the University of Roehampton, and for me SLT and law have always felt like the same interest — two fields built entirely on what language can and cannot do. In a clinic that might mean giving a child the tools to be understood. In a legal context it might mean ensuring someone's voice actually counts. The connection between the two is what keeps pulling me forward in both directions.</p>
+          <p>Outside my degree I've been getting as much real experience as I can — insight programmes with Goldman Sachs, PwC, Linklaters, TLT, BDO, and Barclays, a hands-on SLT placement at a primary school, running my own football sessions in East London (I'm based in West London), and building a TikTok to over 50,000 followers through consistent content. None of it feels unrelated to me.</p>
+          <p>I'm also an award-winning public speaker. Winning the Jack Petchey Speak Out Award is probably the best single summary of what I'm actually about: taking something that matters and making it land.</p>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-box"><div class="stat-num" data-target="9">0</div><div class="stat-label">GCSEs (Grades 6 to 9)</div></div>
+          <div class="stat-box"><div class="stat-num" data-target="3">0</div><div class="stat-label">A-Levels Completed</div></div>
+          <div class="stat-box"><div class="stat-num" data-target="8">0</div><div class="stat-label">Certifications</div></div>
+          <div class="stat-box"><div class="stat-num" data-target="50" data-suffix="k+">0</div><div class="stat-label">TikTok Followers</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">What I've Done</p>
+        <h2 class="section-title">Experience and Achievements</h2>
+      </div>
+      <div class="award-banner reveal">
+        <div class="award-icon">🏆</div>
+        <div>
+          <div class="award-title">Jack Petchey Speak Out Award</div>
+          <div class="award-desc">Recognised for outstanding public speaking — for communicating ideas that matter with clarity, confidence, and the ability to hold a room.</div>
+        </div>
+      </div>
+      <div class="filter-bar reveal">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="healthcare-slt">Healthcare and SLT</button>
+        <button class="filter-btn" data-filter="law-finance">Law and Finance</button>
+        <button class="filter-btn" data-filter="community-sport">Community and Sport</button>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item reveal" data-category="healthcare-slt">
+          <div class="timeline-date">Jan 2026<br>Feb 2026</div>
+          <div class="timeline-spine"><div class="spine-dot"></div><div class="spine-line"></div></div>
+          <div class="timeline-body">
+            <div class="timeline-role">SLT Observation Placement</div>
+            <div class="timeline-org">Sacred Heart Catholic Primary and Nursery School</div>
+            <ul class="timeline-desc">
+              <li>Observed SLT sessions from Nursery through to Year 6, building a real picture of how communication develops at different ages.</li>
+              <li>Supported a qualified Speech and Language Therapist working with children with communication needs.</li>
+              <li>Sharpened observation and active listening skills in a fast-moving, child-centred environment.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item reveal" data-category="community-sport">
+          <div class="timeline-date">Ongoing<br>East London</div>
+          <div class="timeline-spine"><div class="spine-dot"></div><div class="spine-line"></div></div>
+          <div class="timeline-body">
+            <div class="timeline-role">Community Football Coach</div>
+            <div class="timeline-org">Independent Sessions</div>
+            <ul class="timeline-desc">
+              <li>Plans and leads football training sessions for local young players in East London, covering drills, positioning, and game awareness.</li>
+              <li>Manages group dynamics and adapts sessions based on ability levels and attendance.</li>
+              <li>Developed real-world leadership, group communication, and planning skills under pressure.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item reveal" data-category="law-finance">
+          <div class="timeline-date">Sep 2024<br>Jun 2025</div>
+          <div class="timeline-spine"><div class="spine-dot"></div><div class="spine-line"></div></div>
+          <div class="timeline-body">
+            <div class="timeline-role">Young Professionals Programme</div>
+            <div class="timeline-org">Finance and Law — PwC, Goldman Sachs, Lloyds Banking Group</div>
+            <ul class="timeline-desc">
+              <li>Attended professional development seminars hosted by top-tier firms over 10 months.</li>
+              <li>Built confidence in networking, professional communication, and articulating ideas clearly under pressure.</li>
+              <li>Developed commercial awareness and an understanding of how large organisations operate.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item reveal" data-category="community-sport">
+          <div class="timeline-date">Oct 2024</div>
+          <div class="timeline-spine"><div class="spine-dot"></div><div class="spine-line"></div></div>
+          <div class="timeline-body">
+            <div class="timeline-role">Event Organiser</div>
+            <div class="timeline-org">Family Charity Fundraiser</div>
+            <ul class="timeline-desc">
+              <li>Co-organised and ran a community charity stall, managing logistics, public engagement, and donation coordination.</li>
+              <li>Designed multilingual promotional flyers combining graphic design with a focus on accessible, inclusive communication.</li>
+              <li>Coordinated volunteers on the day to keep setup, engagement, and donation handling running smoothly.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item reveal" data-category="healthcare-slt">
+          <div class="timeline-date">Sep 2023<br>Oct 2023</div>
+          <div class="timeline-spine"><div class="spine-dot"></div><div class="spine-line"></div></div>
+          <div class="timeline-body">
+            <div class="timeline-role">Work Experience</div>
+            <div class="timeline-org">Silicon Dental Centre</div>
+            <ul class="timeline-desc">
+              <li>Observed professional healthcare operations, learning about patient confidentiality and clinical standards first-hand.</li>
+              <li>Developed understanding of professional communication and discretion in a patient-facing environment.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">Academic Background</p>
+        <h2 class="section-title">Education</h2>
+      </div>
+      <div class="edu-grid reveal">
+        <div class="edu-card">
+          <div class="edu-level">University</div>
+          <div class="edu-qual">BSc Speech and Language Therapy</div>
+          <div class="edu-school">University of Roehampton</div>
+          <div class="edu-grade">September 2025 — Expected June 2028</div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-level">A-Levels</div>
+          <div class="edu-qual">Graphics, Economics, Business</div>
+          <div class="edu-school">Twyford Church of England</div>
+          <div class="edu-grade">Grades A, B, B — 2023 to 2025</div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-level">GCSEs</div>
+          <div class="edu-qual">9 GCSEs</div>
+          <div class="edu-school">Ada Lovelace Church of England High School</div>
+          <div class="edu-grade">Grades 6 to 9, including Maths and English — 2018 to 2023</div>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">What I Bring</p>
+        <h2 class="section-title">Skills</h2>
+      </div>
+      <div class="skills-categories reveal">
+        <div class="skill-group">
+          <div class="skill-category-title">Clinical and SLT-Adjacent</div>
+          <div class="skills-wrap">
+            <span class="skill-tag">Active Listening</span>
+            <span class="skill-tag">Communication Support</span>
+            <span class="skill-tag">Working with Children</span>
+            <span class="skill-tag">Safeguarding Awareness</span>
+            <span class="skill-tag">Observation and Note-Taking</span>
+            <span class="skill-tag">Patient Confidentiality</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-category-title">Workplace</div>
+          <div class="skills-wrap">
+            <span class="skill-tag">Customer Service</span>
+            <span class="skill-tag">Teamwork</span>
+            <span class="skill-tag">Organisation</span>
+            <span class="skill-tag">Attention to Detail</span>
+            <span class="skill-tag">Event Management</span>
+            <span class="skill-tag">Public Speaking</span>
+            <span class="skill-tag">Leadership</span>
+            <span class="skill-tag">Professional Communication</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-category-title">Tools and Creative</div>
+          <div class="skills-wrap">
+            <span class="skill-tag">Graphic Design</span>
+            <span class="skill-tag">Content Creation</span>
+            <span class="skill-tag">Brand and Packaging Design</span>
+            <span class="skill-tag">Spreadsheets</span>
+            <span class="skill-tag">Basic Data Analytics</span>
+            <span class="skill-tag">Multilingual Outreach</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:4rem" class="reveal">
+        <p class="section-label">Certifications</p>
+        <h2 class="section-title" style="font-size:2rem;margin-bottom:0.5rem">Credentials</h2>
+        <p style="color:var(--mid);font-size:0.8rem;margin-bottom:2rem">Click any credential to view the certificate.</p>
+        <div class="cert-grid">
+          <a class="cert-item" href="#" target="_blank" rel="noopener"><span class="cert-arrow">↗</span>Enhanced DBS Check<span class="cert-issuer">Safeguarding · Available on request</span></a>
+          <a class="cert-item" href="#" target="_blank" rel="noopener"><span class="cert-arrow">↗</span>Full Driving Licence (Manual)<span class="cert-issuer">DVLA</span></a>
+          <a class="cert-item" href="#" target="_blank" rel="noopener"><span class="cert-arrow">↗</span>Insight to Linklaters<span class="cert-issuer">Law</span></a>
+          <a class="cert-item" href="#" target="_blank" rel="noopener"><span class="cert-arrow">↗</span>Legal Careers with TLT<span class="cert-issuer">Virtual Work Experience</span></a>
+          <a class="cert-item" href="#" target="_blank" rel="noopener"><span class="cert-arrow">↗</span>Insight to BDO<span class="cert-issuer">Careers in Business</span></a>
+          <a class="cert-item" href="#" target="_blank" rel="noopener"><span class="cert-arrow">↗</span>Barclays: Data Analytics<span class="cert-issuer">Career Insight</span></a>
+          <a class="cert-item" href="#" target="_blank" rel="noopener"><span class="cert-arrow">↗</span>Barclays: Finance<span class="cert-issuer">Career Insight</span></a>
+          <a class="cert-item" href="#" target="_blank" rel="noopener"><span class="cert-arrow">↗</span>Lloyds Banking Group Careers Live<span class="cert-issuer">Finance Insight</span></a>
+        </div>
+      </div>
+
+      <div style="margin-top:4rem" class="reveal">
+        <p class="section-label">Outside of Work</p>
+        <h2 class="section-title" style="font-size:2rem;margin-bottom:2rem">Interests</h2>
+        <div class="hobbies-grid">
+          <div class="hobby-card"><span class="hobby-icon">⚽</span><span class="hobby-name">Football</span><span class="hobby-desc">5-a-side and coaching in East London — I'm West London based but run sessions across the city</span></div>
+          <div class="hobby-card"><span class="hobby-icon">🤸</span><span class="hobby-name">Calisthenics</span><span class="hobby-desc">Training with bodyweight builds discipline and focus — slow progress, real results</span></div>
+          <div class="hobby-card"><span class="hobby-icon">🥊</span><span class="hobby-name">Boxing</span><span class="hobby-desc">As much mental as it is physical — it teaches you to stay calm under pressure</span></div>
+          <div class="hobby-card"><span class="hobby-icon">🧗</span><span class="hobby-name">Bouldering</span><span class="hobby-desc">Problem-solving with your whole body — every route is a puzzle that needs figuring out</span></div>
+          <div class="hobby-card"><span class="hobby-icon">🏓</span><span class="hobby-name">Paddle</span><span class="hobby-desc">Fast, reactive, social — one of the most enjoyable things I've picked up</span></div>
+          <div class="hobby-card"><span class="hobby-icon">✈️</span><span class="hobby-name">Travelling</span><span class="hobby-desc">Different places, different ways people communicate — it feeds directly into why I do what I do</span></div>
+          <div class="hobby-card"><span class="hobby-icon">🎞️</span><span class="hobby-name">Content Creation</span><span class="hobby-desc">Built a TikTok to over 50,000 followers — proving that knowing your audience is everything</span></div>
+          <div class="hobby-card"><span class="hobby-icon">👗</span><span class="hobby-name">Fashion</span><span class="hobby-desc">Personal style as its own language — how you present yourself communicates before you say a word</span></div>
+          <div class="hobby-card"><span class="hobby-icon">🍳</span><span class="hobby-name">Cooking and Baking</span><span class="hobby-desc">Following a recipe is easy — improvising is where the skill actually is</span></div>
+          <div class="hobby-card"><span class="hobby-icon">🎨</span><span class="hobby-name">Graphic Design</span><span class="hobby-desc">Led the Planters Teas and Infusions brand project through A-Level Graphics — packaging and marketing visuals</span></div>
+          <div class="hobby-card"><span class="hobby-icon">♟️</span><span class="hobby-name">Chess</span><span class="hobby-desc">Games that make you think several moves ahead — chess does that better than anything</span></div>
+          <div class="hobby-card"><span class="hobby-icon">🎛️</span><span class="hobby-name">Beat Making</span><span class="hobby-desc">Building something from nothing on a beat pad — music production as a creative outlet</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section id="portfolio">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">My Work</p>
+        <h2 class="section-title">Portfolio</h2>
+      </div>
+      <div class="portfolio-grid reveal">
+        <div class="portfolio-card filled">
+          <span class="portfolio-icon">🎨</span>
+          <div class="portfolio-coming">Planters Teas and Infusions</div>
+          <div class="portfolio-sub">Brand design, packaging, and marketing visuals — A-Level Graphics project</div>
+        </div>
+        <div class="portfolio-card">
+          <span class="portfolio-icon">📊</span>
+          <div class="portfolio-coming">Coming Soon</div>
+          <div class="portfolio-sub">Projects and Reports</div>
+        </div>
+        <div class="portfolio-card">
+          <span class="portfolio-icon">🎪</span>
+          <div class="portfolio-coming">Coming Soon</div>
+          <div class="portfolio-sub">Events</div>
+        </div>
+      </div>
+      <p class="portfolio-note reveal">More items being added. Check back soon.</p>
+    </div>
+    <div class="divider"></div>
+  </section>
+
+  <!-- REFERENCES -->
+  <section id="references">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">What Others Say</p>
+        <h2 class="section-title">References</h2>
+      </div>
+      <div class="ref-grid reveal">
+        <div class="ref-card">
+          <div class="ref-quote-mark">"</div>
+          <p class="ref-text">Riaz is an exceptional student with huge amounts of potential and talent. I have been impressed with both his ambition and ability to navigate complex Economic theory. Riaz has the ability to achieve extremely high academic results and he is keen at taking on feedback to improve his performance. I'm sure he will be successful in reaching his future goals and an asset to any future employer.</p>
+          <div class="ref-name">Sobia Iqbal</div>
+          <div class="ref-role">Economics Teacher, Twyford Church of England — October 2024</div>
+        </div>
+        <div class="ref-card placeholder">
+          <p class="ref-placeholder-text">Reference from Sacred Heart Catholic Primary School — coming soon.</p>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+  </section>
+
+  <!-- FOOD MAP -->
+  <section id="food-map">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">Riaz's London</p>
+        <h2 class="section-title">Food Map</h2>
+        <p style="color:var(--mid);font-size:0.85rem;margin-top:-2rem;margin-bottom:2rem;">All spots are halal. Green = visited · Orange = on the wishlist.</p>
+      </div>
+
+      <!-- Search bar -->
+      <div class="reveal" style="margin-bottom:1rem;">
+        <input id="mapSearch" type="text" placeholder="Search spots, areas, cuisines..." style="width:100%;background:var(--card);border:1px solid var(--border);color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.82rem;padding:0.65rem 1rem;outline:none;transition:border-color 0.3s;" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border)'" oninput="filterMap()"/>
+      </div>
+
+      <!-- Filter rows -->
+      <div class="reveal" style="margin-bottom:0.6rem;">
+        <p style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-bottom:0.5rem;">Status</p>
+        <div class="map-filter-btns">
+          <button class="map-filter active" data-map-filter="status" data-val="all">All</button>
+          <button class="map-filter" data-map-filter="status" data-val="visited">Visited</button>
+          <button class="map-filter" data-map-filter="status" data-val="wishlist">Wishlist</button>
+        </div>
+      </div>
+
+      <div class="reveal" style="margin-bottom:0.6rem;">
+        <p style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-bottom:0.5rem;">Category</p>
+        <div class="map-filter-btns" id="catFilters">
+          <button class="map-filter active" data-map-filter="cat" data-val="all">All</button>
+          <button class="map-filter" data-map-filter="cat" data-val="food">🍔 Food</button>
+          <button class="map-filter" data-map-filter="cat" data-val="dessert">🍰 Desserts</button>
+          <button class="map-filter" data-map-filter="cat" data-val="cafe">☕ Cafes</button>
+        </div>
+      </div>
+
+      <div class="reveal" style="margin-bottom:0.6rem;">
+        <p style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-bottom:0.5rem;">Cuisine</p>
+        <div class="map-filter-btns" id="cuisineFilters">
+          <button class="map-filter active" data-map-filter="cuisine" data-val="all">All</button>
+          <button class="map-filter" data-map-filter="cuisine" data-val="american">🍟 American</button>
+          <button class="map-filter" data-map-filter="cuisine" data-val="asian">🍜 Asian</button>
+          <button class="map-filter" data-map-filter="cuisine" data-val="panasian">🥢 Pan Asian</button>
+          <button class="map-filter" data-map-filter="cuisine" data-val="italian">🍝 Italian</button>
+          <button class="map-filter" data-map-filter="cuisine" data-val="middleeastern">🥙 Middle Eastern</button>
+          <button class="map-filter" data-map-filter="cuisine" data-val="turkish">🥗 Turkish</button>
+          <button class="map-filter" data-map-filter="cuisine" data-val="indian">🍛 Indian</button>
+          <button class="map-filter" data-map-filter="cuisine" data-val="chicken">🍗 Chicken</button>
+          <button class="map-filter" data-map-filter="cuisine" data-val="desserts">🍮 Sweets</button>
+        </div>
+      </div>
+
+      <div class="reveal" style="margin-bottom:0.6rem;">
+        <p style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-bottom:0.5rem;">Area</p>
+        <div class="map-filter-btns" id="areaFilters">
+          <button class="map-filter active" data-map-filter="area" data-val="all">All</button>
+          <button class="map-filter" data-map-filter="area" data-val="east">East London</button>
+          <button class="map-filter" data-map-filter="area" data-val="north">North London</button>
+          <button class="map-filter" data-map-filter="area" data-val="west">West London</button>
+          <button class="map-filter" data-map-filter="area" data-val="central">Central London</button>
+          <button class="map-filter" data-map-filter="area" data-val="south">South London</button>
+        </div>
+      </div>
+
+      <div class="map-controls reveal" style="margin-bottom:0.8rem;">
+        <div class="map-legend">
+          <div class="legend-item"><div class="legend-dot visited"></div>Visited</div>
+          <div class="legend-item"><div class="legend-dot wishlist"></div>Wishlist</div>
+        </div>
+        <div class="map-counter">
+          <span id="visitedCount">0</span> visited &nbsp;·&nbsp; <span id="wishlistCount">0</span> on the wishlist &nbsp;·&nbsp; <span id="shownCount">0</span> showing
+        </div>
+      </div>
+
+      <div id="map" class="reveal"></div>
+    </div>
+    <div class="divider"></div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container reveal">
+      <p class="section-label">Get In Touch</p>
+      <h2 class="section-title" style="margin-bottom:0.5rem">Let's connect.</h2>
+      <p style="color:var(--mid);font-size:0.88rem">Email is the best way to reach me.</p>
+      <div class="contact-options">
+        <div class="contact-link-wrap">
+          <a href="/cdn-cgi/l/email-protection#d5a7b4bebdb4bbfba0be95b2b8b4bcb9fbb6bab8" class="contact-link">
+            <svg class="contact-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            <span class="__cf_email__" data-cfemail="532132383b323d7d263813343e323a3f7d303c3e">[email&#160;protected]</span>
+          </a>
+          <button id="copyBtn" onclick="copyEmail()" title="Copy email address">Copy</button>
+        </div>
+        <div class="contact-link-wrap">
+          <a href="https://www.linkedin.com/in/riazkhan06" target="_blank" rel="noopener" class="contact-link">
+            <svg class="contact-icon" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            LinkedIn — /riazkhan06
+          </a>
+        </div>
+        <div class="contact-link-wrap">
+          <a href="https://www.tiktok.com/@riazkhan" target="_blank" rel="noopener" class="contact-link">
+            <svg class="contact-icon" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.75a4.85 4.85 0 01-1.01-.06z"/></svg>
+            TikTok — 50k+ Followers
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>© 2026 Riaz Khan</div>
+    <div style="font-size:0.68rem;margin-top:0.2rem">Last updated February 2026</div>
+    <div class="footer-links">
+      <span class="footer-link" onclick="openModal('privacyModal')">Privacy Policy</span>
+      <span class="footer-link" onclick="openModal('termsModal')">Terms of Use</span>
+    </div>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // ── PARALLAX ──
+    const heroVideo = document.getElementById('heroVideo');
+    window.addEventListener('scroll', function() {
+      if (window.scrollY < window.innerHeight) {
+        heroVideo.style.transform = 'translateY(' + (window.scrollY * 0.3) + 'px)';
+      }
+    }, { passive: true });
+
+    // ── TYPING ──
+    var typingPhrases = ['Future Clinician.', 'Student at Roehampton.', 'Connect via Email.', 'Based in West London.', 'Open to Opportunities.'];
+    var tpi = 0, tci = 0, tdel = false;
+    var te = document.getElementById('typed-text');
+    function type() {
+      var cur = typingPhrases[tpi % typingPhrases.length];
+      if (!tdel) {
+        te.textContent = cur.slice(0, tci + 1); tci++;
+        if (tci === cur.length) { tdel = true; setTimeout(type, 1800); return; }
+      } else {
+        te.textContent = cur.slice(0, tci - 1); tci--;
+        if (tci === 0) { tdel = false; tpi = (tpi + 1) % typingPhrases.length; }
+      }
+      setTimeout(type, tdel ? 55 : 95);
+    }
+    setTimeout(type, 1400);
+
+    // ── THEME ──
+    var isDark = true;
+    function toggleTheme() {
+      isDark = !isDark;
+      document.body.classList.toggle('light', !isDark);
+      var lbl = isDark ? '☀ Light' : '☾ Dark';
+      var b1 = document.getElementById('themeBtn'); if(b1) b1.textContent = lbl;
+      var b2 = document.getElementById('themeBtn2'); if(b2) b2.textContent = lbl;
+    }
+
+    // ── LANGUAGE ──
+    var currentLang = 'en';
+    var navTranslations = {
+      en: { about:'About', experience:'Experience', education:'Education', skills:'Skills', portfolio:'Portfolio', references:'References', 'food-map':'Food Map', contact:'Contact' },
+      bn: { about:'সম্পর্কে', experience:'অভিজ্ঞতা', education:'শিক্ষা', skills:'দক্ষতা', portfolio:'পোর্টফোলিও', references:'সুপারিশ', 'food-map':'খাবার ম্যাপ', contact:'যোগাযোগ' }
+    };
+    function toggleLang() {
+      currentLang = currentLang === 'en' ? 'bn' : 'en';
+      var lbl = currentLang === 'en' ? 'BN' : 'EN';
+      var lb1 = document.getElementById('langBtn'); if(lb1) { lb1.textContent = lbl; lb1.classList.toggle('active', currentLang === 'bn'); }
+      var lb2 = document.getElementById('langBtn2'); if(lb2) { lb2.textContent = lbl; lb2.classList.toggle('active', currentLang === 'bn'); }
+      document.documentElement.lang = currentLang === 'bn' ? 'bn' : 'en';
+      document.body.classList.toggle('lang-bn', currentLang === 'bn');
+      document.querySelectorAll('[data-section]').forEach(function(a) {
+        var sec = a.getAttribute('data-section');
+        if (navTranslations[currentLang][sec]) a.textContent = navTranslations[currentLang][sec];
+      });
+      tci = 0; tdel = false;
+    }
+
+    // ── MODALS ──
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    document.querySelectorAll('.modal-backdrop').forEach(function(m) {
+      m.addEventListener('click', function(e) { if (e.target === m) m.classList.remove('open'); });
+    });
+
+    // ── COPY EMAIL ──
+    function copyEmail() {
+      navigator.clipboard.writeText('rakhan.uk@gmail.com').then(function() {
+        var btn = document.getElementById('copyBtn');
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+
+    // ── SCROLL PROGRESS + BACK TO TOP ──
+    var bar = document.getElementById('progress-bar');
+    var btt = document.getElementById('back-to-top');
+    window.addEventListener('scroll', function() {
+      var total = document.body.scrollHeight - window.innerHeight;
+      bar.style.width = (window.scrollY / total * 100) + '%';
+      btt.classList.toggle('visible', window.scrollY > 400);
+    });
+
+    // ── ACTIVE NAV ──
+    var navLinks = document.querySelectorAll('nav ul a[data-section]');
+    var navObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          navLinks.forEach(function(a) { a.classList.remove('active'); });
+          var active = document.querySelector('nav ul a[data-section="' + entry.target.id + '"]');
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { threshold: 0.25 });
+    document.querySelectorAll('section[id]').forEach(function(s) { navObs.observe(s); });
+
+    // ── HAMBURGER ──
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+      document.getElementById('hamburger').classList.toggle('open');
+    }
+    function closeMenu() {
+      document.getElementById('mobileMenu').classList.remove('open');
+      document.getElementById('hamburger').classList.remove('open');
+    }
+
+    // ── TIMELINE FILTER ──
+    document.querySelectorAll('.filter-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        var f = btn.getAttribute('data-filter');
+        document.querySelectorAll('.timeline-item').forEach(function(item) {
+          item.classList.toggle('hidden', f !== 'all' && item.getAttribute('data-category') !== f);
+        });
+      });
+    });
+
+    // ── STAT COUNTERS ──
+    function animateCounter(el) {
+      var target = parseInt(el.getAttribute('data-target'));
+      var suffix = el.getAttribute('data-suffix') || '';
+      var steps = 40, inc = target / steps, current = 0;
+      var timer = setInterval(function() {
+        current += inc;
+        if (current >= target) { el.textContent = target + suffix; clearInterval(timer); }
+        else { el.textContent = Math.floor(current) + suffix; }
+      }, 1200 / steps);
+    }
+    var cntObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) { animateCounter(entry.target); cntObs.unobserve(entry.target); }
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.stat-num[data-target]').forEach(function(el) { cntObs.observe(el); });
+
+    // ── SCROLL REVEAL ──
+    var revObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('visible'); revObs.unobserve(e.target); }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(function(el) { revObs.observe(el); });
+
+    // ── FOOD MAP ──
+    // cat: 'food' | 'dessert' | 'cafe'
+    // cuisine: american | asian | panasian | italian | middleeastern | turkish | indian | chicken | desserts | mixed
+    // areaZone: east | north | west | central | south
+    // rating: null = not visited yet (wishlist)
+    var foodSpots = [
+      // ── EAST LONDON ──
+      { name:"Tt's Kitchen", cuisine:"american", cat:"food", areaZone:"east", area:"Whitechapel, East London", status:"wishlist", rating:null, note:"On the radar. Whitechapel spot to check out.", lat:51.5188, lng:-0.0590 },
+      { name:"Taco House", cuisine:"american", cat:"food", areaZone:"east", area:"Hackney, East London", status:"wishlist", rating:null, note:"Hackney taco spot to explore.", lat:51.5450, lng:-0.0553 },
+      { name:"Tower Bridge Food Market – Fuego 1987", cuisine:"american", cat:"food", areaZone:"east", area:"Tower Bridge, SE1", status:"wishlist", rating:null, note:"Street food market by Tower Bridge. Fuego 1987 on the list.", lat:51.5055, lng:-0.0754 },
+      { name:"East West Pizza", cuisine:"italian", cat:"food", areaZone:"north", area:"Tufnell Park, North London", status:"wishlist", rating:null, note:"Pizza spot in Tufnell Park.", lat:51.5561, lng:-0.1372 },
+      { name:"The Grande", cuisine:"american", cat:"food", areaZone:"east", area:"Stratford, East London", status:"wishlist", rating:null, note:"Stratford spot on the wishlist.", lat:51.5416, lng:0.0013 },
+      { name:"Monster Burger", cuisine:"american", cat:"food", areaZone:"east", area:"Ilford, East London", status:"wishlist", rating:null, note:"Big bold halal burgers. Angus beef, all fully halal.", lat:51.5587, lng:0.0741 },
+      { name:"Ghost Burgers", cuisine:"american", cat:"food", areaZone:"east", area:"Gants Hill, East London", status:"visited", rating:3, note:"100% halal wagyu burgers. Loaded fries and mocktails too. Solid but not mind-blowing.", lat:51.5706, lng:0.0680 },
+      { name:"The Burger Firm", cuisine:"american", cat:"food", areaZone:"east", area:"Whitechapel, East London", status:"wishlist", rating:null, note:"Whitechapel burger spot to try.", lat:51.5193, lng:-0.0606 },
+      { name:"Burger Firm", cuisine:"american", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:4, note:"Proper solid burger. Enjoyed this one.", lat:51.5200, lng:-0.0600 },
+      { name:"Mutleys", cuisine:"american", cat:"food", areaZone:"east", area:"Barking, East London", status:"visited", rating:5, note:"Smash burgers, broasted chicken, Bangla ranch sauce — everything goes off. The best.", lat:51.5362, lng:0.0817 },
+      { name:"Funky Noodles", cuisine:"asian", cat:"food", areaZone:"east", area:"East London", status:"wishlist", rating:null, note:"Noodle spot on the list.", lat:51.5200, lng:-0.0700 },
+      { name:"Midpoint", cuisine:"american", cat:"food", areaZone:"south", area:"Greenwich, South London", status:"wishlist", rating:null, note:"Greenwich spot to check out.", lat:51.4825, lng:-0.0054 },
+      { name:"Tigers Diner", cuisine:"american", cat:"food", areaZone:"east", area:"East London", status:"wishlist", rating:null, note:"On the wishlist.", lat:51.5230, lng:-0.0620 },
+      { name:"Paro", cuisine:"indian", cat:"food", areaZone:"central", area:"Central London", status:"visited", rating:5, note:"Absolutely unreal. Indian fine dining done properly. Must visit.", lat:51.5135, lng:-0.1415 },
+      { name:"D's Kitchen", cuisine:"american", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:1, note:"Disappointing. Wouldn't go back.", lat:51.5210, lng:-0.0640 },
+      { name:"Meat Up", cuisine:"american", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:5, note:"Absolutely smashed it. Top-tier meat experience.", lat:51.5240, lng:-0.0660 },
+      { name:"Bun & Sum", cuisine:"asian", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:3, note:"Asian buns. Fun concept, decent execution.", lat:51.5220, lng:-0.0580 },
+      { name:"Smoke and Pepper", cuisine:"american", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:4, note:"Good smoky flavours. Worth a visit.", lat:51.5230, lng:-0.0610 },
+      { name:"Al Kahf", cuisine:"middleeastern", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:4, note:"Solid Middle Eastern food. Reliable and tasty.", lat:51.5245, lng:-0.0630 },
+      { name:"Phat for Life", cuisine:"american", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:5, note:"Lives up to the name. Phat portions, phat flavour.", lat:51.5255, lng:-0.0650 },
+      { name:"Adana", cuisine:"turkish", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:1, note:"Not for me. Very disappointing.", lat:51.5260, lng:-0.0670 },
+      { name:"Miami Crispy", cuisine:"chicken", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:3, note:"Crispy chicken spot. Average but does the job.", lat:51.5270, lng:-0.0690 },
+      { name:"Bakhlava Company", cuisine:"middleeastern", cat:"dessert", areaZone:"east", area:"Commercial Road, East London", status:"visited", rating:3, note:"Middle Eastern sweets on Commercial Road. Baklava is decent.", lat:51.5131, lng:-0.0575 },
+      { name:"Food Coma", cuisine:"american", cat:"food", areaZone:"east", area:"East London", status:"wishlist", rating:null, note:"On the wishlist — the name alone sells it.", lat:51.5280, lng:-0.0710 },
+      { name:"Manjaros", cuisine:"american", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:3, note:"Decent spot. Not bad, not amazing.", lat:51.5290, lng:-0.0720 },
+      { name:"Inaq", cuisine:"middleeastern", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:2, note:"Had high hopes. Fell short.", lat:51.5300, lng:-0.0730 },
+      { name:"Royal Nawwab", cuisine:"indian", cat:"food", areaZone:"west", area:"A40 Corridor, West London", status:"visited", rating:1, note:"Major disappointment. Wouldn't recommend.", lat:51.5310, lng:-0.2850 },
+      { name:"Somewhere Cafe", cuisine:"mixed", cat:"cafe", areaZone:"central", area:"Harrods, Knightsbridge", status:"visited", rating:5, note:"Inside Harrods — the setting alone is an experience. Food actually delivered too.", lat:51.4994, lng:-0.1630 },
+      { name:"Gokuzu", cuisine:"turkish", cat:"food", areaZone:"west", area:"Park Royal, West London", status:"visited", rating:5, note:"Turkish grill done to perfection. Park Royal hidden gem.", lat:51.5313, lng:-0.2774 },
+      { name:"Hala", cuisine:"middleeastern", cat:"food", areaZone:"north", area:"Green Lane, North London", status:"visited", rating:3, note:"Middle Eastern staple. Reliable but not exciting.", lat:51.5742, lng:-0.1031 },
+      { name:"White Horse Kebab", cuisine:"turkish", cat:"food", areaZone:"east", area:"Bethnal Green, East London", status:"visited", rating:5, note:"Late night kebab institution. Consistently elite.", lat:51.5278, lng:-0.0579 },
+      { name:"Noya", cuisine:"asian", cat:"food", areaZone:"central", area:"Central London", status:"visited", rating:5, note:"Vietnamese done brilliantly. Clean flavours, beautiful presentation.", lat:51.5135, lng:-0.1480 },
+      { name:"Creme", cuisine:"desserts", cat:"dessert", areaZone:"central", area:"Oxford Circus, Central London", status:"visited", rating:5, note:"Dessert heaven near Oxford Circus. 10/10 experience.", lat:51.5154, lng:-0.1415 },
+      { name:"Palette", cuisine:"mixed", cat:"cafe", areaZone:"central", area:"Central London", status:"visited", rating:4, note:"Aesthetic cafe vibes. Great for photos and decent food.", lat:51.5140, lng:-0.1350 },
+      { name:"Rabbit Hole", cuisine:"american", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:3, note:"Quirky spot. Fun concept, food is average.", lat:51.5310, lng:-0.0740 },
+      { name:"Tattu London", cuisine:"asian", cat:"food", areaZone:"central", area:"Soho, Central London", status:"wishlist", rating:null, note:"Stunning restaurant — floral ceiling, Asian fine dining. On the list. Chicken & lamb halal.", lat:51.5131, lng:-0.1338 },
+      { name:"Ting at The Shard", cuisine:"panasian", cat:"food", areaZone:"south", area:"London Bridge, South London", status:"wishlist", rating:null, note:"35th floor views at the Shard. Asian-European menu. Must pre-book halal options 24hrs ahead.", lat:51.5045, lng:-0.0864 },
+      { name:"Ivy Asia Mayfair", cuisine:"asian", cat:"food", areaZone:"central", area:"Mayfair, Central London", status:"wishlist", rating:null, note:"Pan-Asian fine dining in Mayfair. Halal options available.", lat:51.5106, lng:-0.1424 },
+      { name:"Bacchanalia", cuisine:"mixed", cat:"food", areaZone:"central", area:"Mayfair, Central London", status:"wishlist", rating:null, note:"Greek-Mediterranean fine dining. Damien Hirst sculptures. Visited by halal food bloggers.", lat:51.5125, lng:-0.1485 },
+      { name:"Grounded", cuisine:"mixed", cat:"cafe", areaZone:"east", area:"Whitechapel, East London", status:"wishlist", rating:null, note:"Coffee-forward spot in Whitechapel.", lat:51.5195, lng:-0.0615 },
+      { name:"Noir", cuisine:"indian", cat:"food", areaZone:"east", area:"South Woodford, East London", status:"wishlist", rating:null, note:"Halal fine dining with an Indian chef. Fully halal. Super aesthetic.", lat:51.5918, lng:0.0273 },
+      { name:"Haute Dolci", cuisine:"desserts", cat:"dessert", areaZone:"central", area:"Central London", status:"wishlist", rating:null, note:"Fully halal luxury dessert restaurant. Aesthetic overload.", lat:51.5012, lng:-0.0059 },
+      { name:"Drunch Mayfair", cuisine:"mixed", cat:"cafe", areaZone:"central", area:"Mayfair, Central London", status:"wishlist", rating:null, note:"Halal all-day brunch, shisha garden, Insta-worthy coffees. Very aesthetic.", lat:51.5104, lng:-0.1444 },
+      { name:"El&N Deli & Bakery", cuisine:"mixed", cat:"cafe", areaZone:"central", area:"Covent Garden, Central London", status:"wishlist", rating:null, note:"The pink cafe everyone posts about. Covent Garden location.", lat:51.5123, lng:-0.1235 },
+      { name:"Cafeja", cuisine:"mixed", cat:"cafe", areaZone:"north", area:"Stanmore, North London", status:"wishlist", rating:null, note:"Stanmore cafe on the list.", lat:51.6195, lng:-0.3034 },
+      { name:"Afrikana", cuisine:"american", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:2, note:"Afro-Caribbean vibes. Didn't live up to the hype for me.", lat:51.5320, lng:-0.0650 },
+      { name:"Apple Butter", cuisine:"mixed", cat:"cafe", areaZone:"central", area:"Regent Street, Central London", status:"wishlist", rating:null, note:"Middle Eastern fusion cafe on Regent Street. Croissant butter pudding is the move.", lat:51.5150, lng:-0.1413 },
+      { name:"Second Wife", cuisine:"middleeastern", cat:"food", areaZone:"east", area:"East London", status:"wishlist", rating:null, note:"On the radar.", lat:51.5330, lng:-0.0660 },
+      { name:"Ali Baba", cuisine:"middleeastern", cat:"food", areaZone:"north", area:"North West London", status:"wishlist", rating:null, note:"North West London Middle Eastern spot to hit.", lat:51.5540, lng:-0.1730 },
+      { name:"Dark Burg", cuisine:"american", cat:"food", areaZone:"west", area:"Park Royal, West London", status:"wishlist", rating:null, note:"Park Royal burger spot on the list.", lat:51.5308, lng:-0.2790 },
+      { name:"Grubbox", cuisine:"american", cat:"food", areaZone:"east", area:"East London", status:"wishlist", rating:null, note:"East London food box spot to try.", lat:51.5340, lng:-0.0680 },
+      { name:"Pizza Bella", cuisine:"italian", cat:"food", areaZone:"north", area:"Hornsey Road, North London", status:"visited", rating:5, note:"Hornsey Road pizza gem. Absolutely nailed it.", lat:51.5643, lng:-0.1125 },
+      { name:"The Wing Barista", cuisine:"chicken", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:4, note:"Wings done right. Proper crispy and saucy.", lat:51.5350, lng:-0.0690 },
+      { name:"Darbar Restaurant", cuisine:"indian", cat:"food", areaZone:"west", area:"Hanger Lane, West London", status:"visited", rating:4, note:"Classic Indian dining near Hanger Lane. Solid flavours.", lat:51.5305, lng:-0.3075 },
+      { name:"Antepliler", cuisine:"turkish", cat:"food", areaZone:"north", area:"North London", status:"visited", rating:3, note:"Turkish restaurant. Decent but nothing special.", lat:51.5680, lng:-0.1090 },
+      { name:"Tea Stall", cuisine:"indian", cat:"cafe", areaZone:"east", area:"East London", status:"visited", rating:5, note:"Chai done properly. Underrated gem.", lat:51.5200, lng:-0.0580 },
+      { name:"Bims", cuisine:"american", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:1, note:"Didn't rate it at all. Avoid.", lat:51.5360, lng:-0.0700 },
+      { name:"Wingman", cuisine:"chicken", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:5, note:"Wing perfection. One of the best in London.", lat:51.5370, lng:-0.0710 },
+      { name:"Side Street", cuisine:"american", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:1, note:"Left feeling let down. Not worth it.", lat:51.5380, lng:-0.0720 },
+      { name:"Swiss Butter", cuisine:"american", cat:"food", areaZone:"central", area:"Central London", status:"visited", rating:4, note:"Lebanese-inspired burger chain. Proper good.", lat:51.5160, lng:-0.1430 },
+      { name:"Salts Smokehouse", cuisine:"american", cat:"food", areaZone:"west", area:"Ealing Broadway, West London", status:"visited", rating:3, note:"BBQ smokehouse in Ealing. Decent but not top tier.", lat:51.5131, lng:-0.3017 },
+      { name:"Solis", cuisine:"mixed", cat:"food", areaZone:"central", area:"Tottenham Court Road, Central London", status:"wishlist", rating:null, note:"Tottenham Court Road spot on the wishlist.", lat:51.5183, lng:-0.1303 },
+      { name:"Simply Smashed", cuisine:"american", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:4, note:"Halal smash burgers. Clean, premium, does the job properly.", lat:51.5390, lng:-0.0730 },
+      { name:"Mexicanos", cuisine:"american", cat:"food", areaZone:"east", area:"East London", status:"wishlist", rating:null, note:"Mexican food spot on the list.", lat:51.5400, lng:-0.0740 },
+      { name:"Nour Cafe", cuisine:"middleeastern", cat:"cafe", areaZone:"east", area:"East London", status:"wishlist", rating:null, note:"Middle Eastern cafe to try.", lat:51.5410, lng:-0.0750 },
+      { name:"Feya", cuisine:"mixed", cat:"cafe", areaZone:"central", area:"Central London", status:"wishlist", rating:null, note:"Aesthetic cafe. Floral interiors, great for a date.", lat:51.5170, lng:-0.1445 },
+      { name:"Wok to Walk", cuisine:"asian", cat:"food", areaZone:"central", area:"Central London", status:"wishlist", rating:null, note:"Fast Asian noodles. On the list.", lat:51.5124, lng:-0.1288 },
+      { name:"Meat Head", cuisine:"american", cat:"food", areaZone:"east", area:"East London", status:"wishlist", rating:null, note:"Burger spot on the radar.", lat:51.5420, lng:-0.0760 },
+      { name:"Cafe Kitsune", cuisine:"asian", cat:"cafe", areaZone:"central", area:"Central London", status:"wishlist", rating:null, note:"Japanese-inspired aesthetic cafe. Very instagrammable.", lat:51.5107, lng:-0.1357 },
+      { name:"Wok Boy London", cuisine:"asian", cat:"food", areaZone:"east", area:"East London", status:"wishlist", rating:null, note:"Asian wok spot to check out.", lat:51.5430, lng:-0.0770 },
+      { name:"Love Churros", cuisine:"desserts", cat:"dessert", areaZone:"central", area:"Central London", status:"visited", rating:5, note:"Churros done properly. Simple and unbelievable.", lat:51.5112, lng:-0.1275 },
+      { name:"Meicasso", cuisine:"asian", cat:"food", areaZone:"south", area:"Tooting, South London", status:"wishlist", rating:null, note:"Tooting spot. Asian fusion on the list.", lat:51.4270, lng:-0.1680 },
+      { name:"Le Cafe Nac", cuisine:"middleeastern", cat:"cafe", areaZone:"east", area:"East London", status:"wishlist", rating:null, note:"Middle Eastern cafe to try.", lat:51.5440, lng:-0.0780 },
+      { name:"French Tacos", cuisine:"american", cat:"food", areaZone:"north", area:"Harrow, North London", status:"wishlist", rating:null, note:"French tacos wrap trend has arrived in Harrow. Need to try.", lat:51.5793, lng:-0.3348 },
+      { name:"Peaches", cuisine:"desserts", cat:"dessert", areaZone:"east", area:"Bethnal Green, East London", status:"visited", rating:5, note:"Dessert spot in Bethnal. Elite levels. Don't sleep on this.", lat:51.5278, lng:-0.0578 },
+      { name:"Sprinkles", cuisine:"desserts", cat:"dessert", areaZone:"east", area:"Bethnal Green, East London", status:"visited", rating:1, note:"Overrated. Not what the hype made it out to be.", lat:51.5282, lng:-0.0582 },
+      { name:"Sip and Petal", cuisine:"mixed", cat:"cafe", areaZone:"east", area:"East London", status:"wishlist", rating:null, note:"Floral cafe. Aesthetic spot to check out.", lat:51.5450, lng:-0.0790 },
+      { name:"Pasha Shawarma", cuisine:"middleeastern", cat:"food", areaZone:"east", area:"East London", status:"wishlist", rating:null, note:"Shawarma spot. On the list.", lat:51.5460, lng:-0.0800 },
+      { name:"One Love Kitchen", cuisine:"american", cat:"food", areaZone:"north", area:"Crouch End, North London", status:"wishlist", rating:null, note:"Crouch End spot on the wishlist.", lat:51.5806, lng:-0.1235 },
+      { name:"The Real Beijing", cuisine:"asian", cat:"food", areaZone:"east", area:"East London", status:"wishlist", rating:null, note:"Chinese to try.", lat:51.5470, lng:-0.0810 },
+      { name:"Sanabel", cuisine:"middleeastern", cat:"food", areaZone:"west", area:"Acton, West London", status:"visited", rating:5, note:"Acton Middle Eastern restaurant. Absolutely class.", lat:51.5085, lng:-0.2700 },
+      { name:"Shake Time", cuisine:"desserts", cat:"dessert", areaZone:"east", area:"East London", status:"wishlist", rating:null, note:"Shakes and desserts spot to try.", lat:51.5480, lng:-0.0820 },
+      { name:"Jollibee", cuisine:"chicken", cat:"food", areaZone:"central", area:"Central London", status:"visited", rating:3, note:"Filipino fast food. Fun experience, not life-changing.", lat:51.5128, lng:-0.1287 },
+      { name:"The Munch", cuisine:"american", cat:"food", areaZone:"east", area:"Shoreditch, East London", status:"wishlist", rating:null, note:"Shoreditch food spot on the radar.", lat:51.5246, lng:-0.0775 },
+      { name:"Como Garden", cuisine:"italian", cat:"food", areaZone:"central", area:"Kensington, West London", status:"wishlist", rating:null, note:"Italian garden dining in Kensington. Looks beautiful.", lat:51.5018, lng:-0.1937 },
+      { name:"Firewood Smokehouse", cuisine:"american", cat:"food", areaZone:"east", area:"East Ham, East London", status:"wishlist", rating:null, note:"Smokehouse in East Ham. BBQ on the wishlist.", lat:51.5395, lng:0.0478 },
+      { name:"Smash and Chai", cuisine:"indian", cat:"cafe", areaZone:"central", area:"Marble Arch, Central London", status:"wishlist", rating:null, note:"Chai + smash burgers concept. Marble Arch. Need to try.", lat:51.5136, lng:-0.1585 },
+      { name:"Burnt", cuisine:"american", cat:"food", areaZone:"east", area:"Leyton, East London", status:"visited", rating:4, note:"Railway arch BBQ in Leyton. Halal-certified. Burgers and brisket are the standouts.", lat:51.5588, lng:-0.0100 },
+      { name:"Meat House", cuisine:"american", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:2, note:"Had potential, didn't deliver. Disappointed.", lat:51.5490, lng:-0.0830 },
+      { name:"Coco Lounge", cuisine:"mixed", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:2, note:"Not for me. Wouldn't rush back.", lat:51.5500, lng:-0.0840 },
+      // ── NORTH LONDON ──
+      { name:"Karv Steakhouse", cuisine:"american", cat:"food", areaZone:"north", area:"Hackney (Clapton), North/East London", status:"visited", rating:4, note:"Halal open-fire steakhouse. Lamb tacos and bone marrow are standouts. Book ahead.", lat:51.5570, lng:-0.0627 },
+      // ── WEST LONDON ──
+      { name:"Popeyes", cuisine:"chicken", cat:"food", areaZone:"west", area:"Ealing Broadway, West London", status:"visited", rating:4, note:"Louisiana-style fried chicken. The spicy chicken sandwich slaps.", lat:51.5131, lng:-0.3016 },
+      { name:"Chop and Chip", cuisine:"american", cat:"food", areaZone:"west", area:"A40, West London", status:"visited", rating:5, note:"A40 roadside legend. Proper chips and chops. Surprisingly elite.", lat:51.5290, lng:-0.2820 },
+      { name:"Tim Hortons", cuisine:"mixed", cat:"cafe", areaZone:"west", area:"Park Royal, West London", status:"visited", rating:3.5, note:"Canadian chain. Coffee and timbits are solid but nothing special.", lat:51.5311, lng:-0.2780 },
+      { name:"Steakout", cuisine:"american", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:4, note:"Halal steakhouse chain. Neon, leather booths. Reliable quality.", lat:51.5390, lng:0.0023 },
+      { name:"No5 Dining", cuisine:"mixed", cat:"food", areaZone:"east", area:"East London", status:"visited", rating:4, note:"Upscale dining experience. Did well.", lat:51.5510, lng:-0.0850 },
+      // ── CENTRAL LONDON ──
+      { name:"Meet Bros", cuisine:"panasian", cat:"food", areaZone:"central", area:"Paddington, Central London", status:"visited", rating:5, note:"Fully halal Asian-fusion steakhouse in Paddington. Medieval basement venue. Alcohol-free. The steak sando is elite.", lat:51.5127, lng:-0.1797 },
+      { name:"Mowchi", cuisine:"asian", cat:"food", areaZone:"central", area:"Central London", status:"wishlist", rating:null, note:"Mochi and Asian desserts. On the list.", lat:51.5145, lng:-0.1320 },
+      // ── WALTHAMSTOW / EAST ──
+      { name:"Urban Chocolatier", cuisine:"desserts", cat:"dessert", areaZone:"east", area:"Walthamstow, East London", status:"visited", rating:5, note:"Dessert institution. The chocolate experience is unreal. One of the best dessert spots in London.", lat:51.5832, lng:-0.0200 }
+    ];
+
+    var activeFilters = { status: 'all', cat: 'all', cuisine: 'all', area: 'all' };
+    var searchQuery = '';
+
+    function makeIcon(type) {
+      var color  = type === 'visited' ? '#4caf82' : '#e8621a';
+      var shadow = type === 'visited' ? 'rgba(76,175,130,0.6)' : 'rgba(232,98,26,0.6)';
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="38" viewBox="0 0 28 38">'
+        + '<filter id="ds' + Math.random().toString(36).slice(2) + '"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="' + shadow + '"/></filter>'
+        + '<path d="M14 0C6.27 0 0 6.27 0 14c0 9.625 14 24 14 24S28 23.625 28 14C28 6.27 21.73 0 14 0z" fill="' + color + '"/>'
+        + '<circle cx="14" cy="14" r="5.5" fill="white" opacity="0.9"/></svg>';
+      return L.divIcon({ html: svg, className: '', iconSize: [28, 38], iconAnchor: [14, 38], popupAnchor: [0, -40] });
+    }
+
+    function starsHtml(r) {
+      if (!r && r !== 0) return '';
+      var s = '';
+      for (var i = 1; i <= 5; i++) {
+        if (r >= i) s += '⭐';
+        else if (r >= i - 0.5) s += '✨';
+        else s += '☆';
+      }
+      return s;
+    }
+
+    var foodMap = L.map('map', { center: [51.510, -0.09], zoom: 11 });
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 19
+    }).addTo(foodMap);
+
+    var mapMarkers = [];
+
+    foodSpots.forEach(function(spot, idx) {
+      var ratingLine = (spot.rating !== null)
+        ? '<div class="map-popup-stars">' + starsHtml(spot.rating) + ' ' + spot.rating + '/5</div>'
+        : '<div style="font-size:0.7rem;color:#e8621a;margin-bottom:0.5rem;">Not visited yet</div>';
+      var badgeLabel = spot.status === 'visited' ? '&#10003; Visited' : '&#9825; Wishlist';
+      var catBadge = spot.cat === 'dessert' ? '🍰' : spot.cat === 'cafe' ? '☕' : '🍔';
+
+      var m = L.marker([spot.lat, spot.lng], { icon: makeIcon(spot.status) });
+      m.bindPopup(
+        '<div style="min-width:200px;padding:4px 2px">'
+        + '<div class="map-popup-badge ' + spot.status + '">' + badgeLabel + '</div>'
+        + '<div class="map-popup-name">' + catBadge + ' ' + spot.name + '</div>'
+        + '<div class="map-popup-meta">' + spot.cuisine + ' &middot; ' + spot.area + '</div>'
+        + ratingLine
+        + '<div class="map-popup-note">' + spot.note + '</div>'
+        + '</div>',
+        { maxWidth: 280 }
+      );
+      m._spot = spot;
+      mapMarkers.push(m);
+    });
+
+    function spotMatchesFilters(spot) {
+      if (activeFilters.status !== 'all' && spot.status !== activeFilters.status) return false;
+      if (activeFilters.cat !== 'all' && spot.cat !== activeFilters.cat) return false;
+      if (activeFilters.cuisine !== 'all' && spot.cuisine !== activeFilters.cuisine) return false;
+      if (activeFilters.area !== 'all' && spot.areaZone !== activeFilters.area) return false;
+      if (searchQuery) {
+        var q = searchQuery.toLowerCase();
+        if (spot.name.toLowerCase().indexOf(q) === -1 &&
+            spot.area.toLowerCase().indexOf(q) === -1 &&
+            spot.cuisine.toLowerCase().indexOf(q) === -1 &&
+            spot.note.toLowerCase().indexOf(q) === -1) return false;
+      }
+      return true;
+    }
+
+    function filterMap() {
+      if (document.getElementById('mapSearch')) {
+        searchQuery = document.getElementById('mapSearch').value;
+      }
+      var shown = 0;
+      mapMarkers.forEach(function(m) {
+        if (spotMatchesFilters(m._spot)) {
+          m.addTo(foodMap);
+          shown++;
+        } else {
+          if (foodMap.hasLayer(m)) foodMap.removeLayer(m);
+        }
+      });
+      document.getElementById('shownCount').textContent = shown;
+    }
+
+    // Initial render
+    mapMarkers.forEach(function(m) { m.addTo(foodMap); });
+
+    document.getElementById('visitedCount').textContent  = foodSpots.filter(function(s) { return s.status === 'visited'; }).length;
+    document.getElementById('wishlistCount').textContent = foodSpots.filter(function(s) { return s.status === 'wishlist'; }).length;
+    document.getElementById('shownCount').textContent = foodSpots.length;
+
+    document.querySelectorAll('.map-filter').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var filterType = btn.getAttribute('data-map-filter');
+        // Deactivate others in same group
+        document.querySelectorAll('.map-filter[data-map-filter="' + filterType + '"]').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        activeFilters[filterType] = btn.getAttribute('data-val');
+        filterMap();
+      });
+    });
+
+  </script>
+</body>
+</html>
