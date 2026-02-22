@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gut Instincts — Riaz's Halal Map of London</title>
+  <meta name="description" content="100+ halal spots across London, rated and reviewed by Riaz Khan. Gut Instincts: because your stomach knows best."/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231a1410'/><text y='72' x='50' text-anchor='middle' font-size='60' font-family='Georgia,serif' fill='%23e8621a'>R</text></svg>"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <meta name="theme-color" content="#131210"/>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --bg:#131210;--surface:#1c1a15;--card:#211f18;--border:#33301f;
+      --mid:#7a7060;--light:#c8bfaa;--white:#f0ece3;
+      --orange:#e8621a;--orange-dim:rgba(232,98,26,0.12);
+    }
+    body.light{--bg:#f6f3ee;--surface:#edeae3;--card:#fff;--border:#dbd7cc;--mid:#8a8070;--light:#3a3530;--white:#1a1814;--orange:#c94e12;--orange-dim:rgba(201,78,18,0.1)}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--white);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;transition:background 0.4s,color 0.4s;min-height:100vh}
+
+    /* AUTH SCREEN */
+    #auth-screen{display:none;position:fixed;inset:0;z-index:9999;background:var(--bg);align-items:center;justify-content:center;flex-direction:column;padding:2rem}
+    .auth-logo{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:0.12em;color:var(--white);margin-bottom:0.2rem;text-align:center}
+    .auth-logo span{color:var(--orange)}
+    .auth-tagline{font-size:0.62rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--mid);margin-bottom:0.5rem;text-align:center}
+    .auth-gut-sub{font-size:0.75rem;color:var(--mid);margin-bottom:2.2rem;text-align:center;font-style:italic}
+    .auth-box{background:var(--card);border:1px solid var(--border);width:100%;max-width:400px;padding:2.5rem}
+    .auth-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:2rem}
+    .auth-tab-btn{flex:1;background:none;border:none;border-bottom:2px solid transparent;position:relative;bottom:-1px;padding:0.7rem 0;font-family:'DM Sans',sans-serif;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);cursor:pointer;transition:color 0.3s,border-color 0.3s}
+    .auth-tab-btn.active{color:var(--orange);border-bottom-color:var(--orange)}
+    .auth-tab-btn:hover{color:var(--white)}
+    .auth-view{display:none}
+    .auth-view.active{display:block}
+    .auth-field{margin-bottom:1rem}
+    .auth-field label{display:block;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-bottom:0.4rem}
+    .auth-field input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.88rem;padding:0.65rem 0.9rem;outline:none;transition:border-color 0.3s}
+    .auth-field input:focus{border-color:var(--orange)}
+    .auth-btn{width:100%;background:var(--orange);color:#111;border:none;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;padding:0.85rem;cursor:pointer;transition:opacity 0.3s;margin-top:0.5rem}
+    .auth-btn:hover{opacity:0.87}
+    .auth-btn:disabled{opacity:0.5;cursor:not-allowed}
+    .auth-error{color:#e84a4a;font-size:0.78rem;margin-top:0.7rem;min-height:1.2em;line-height:1.5}
+    #auth-verify-view{text-align:center}
+    .auth-verify-icon{font-size:2.8rem;margin-bottom:1rem}
+    .auth-verify-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--orange);margin-bottom:0.8rem}
+    .auth-verify-text{font-size:0.85rem;color:var(--light);line-height:1.8;margin-bottom:0.4rem}
+    .auth-verify-email{font-size:0.85rem;color:var(--orange);font-weight:500;margin-bottom:1.5rem;word-break:break-all}
+    .auth-resend-btn{background:none;border:1px solid var(--border);color:var(--mid);font-family:'DM Sans',sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.5rem 1.2rem;cursor:pointer;transition:color 0.3s,border-color 0.3s;margin-bottom:1.2rem}
+    .auth-resend-btn:hover{color:var(--orange);border-color:var(--orange)}
+    .auth-resend-btn:disabled{opacity:0.5;cursor:not-allowed}
+    .auth-back-link{font-size:0.72rem;color:var(--mid);cursor:pointer;letter-spacing:0.08em;text-decoration:underline;transition:color 0.3s}
+    .auth-back-link:hover{color:var(--orange)}
+
+    /* SITE WRAPPER */
+    #site-wrapper{display:none}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 3rem;background:rgba(19,18,16,0.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.05);gap:1rem;transition:background 0.4s}
+    body.light nav{background:rgba(246,243,238,0.92);border-bottom-color:var(--border)}
+    .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.12em;color:var(--white);text-decoration:none;flex-shrink:0}
+    .nav-logo span{color:var(--orange)}
+    .nav-gut-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--white);letter-spacing:0.04em}
+    .nav-gut-title span{color:var(--orange)}
+    .nav-controls{display:flex;align-items:center;gap:0.6rem;flex-shrink:0}
+    .nav-btn{background:none;border:1px solid var(--border);color:var(--mid);font-size:0.68rem;letter-spacing:0.1em;cursor:pointer;padding:0.32rem 0.65rem;transition:color 0.3s,border-color 0.3s;font-family:'DM Sans',sans-serif}
+    .nav-btn:hover{color:var(--orange);border-color:var(--orange)}
+    #nav-user-email{font-size:0.6rem;color:var(--mid);letter-spacing:0.04em;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    #nav-logout-btn{background:none;border:1px solid var(--border);color:var(--mid);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 0.65rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color 0.3s,border-color 0.3s}
+    #nav-logout-btn:hover{color:var(--orange);border-color:var(--orange)}
+    .nav-back{font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color 0.3s;font-family:'DM Sans',sans-serif}
+    .nav-back:hover{color:var(--orange)}
+
+    /* PAGE HERO */
+    .gut-hero{padding:9rem 0 5rem;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+    .gut-hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(232,98,26,0.07) 0%,transparent 70%);pointer-events:none}
+    .gut-hero-label{font-size:0.62rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--orange);margin-bottom:0.8rem}
+    .gut-hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3.5rem,10vw,7rem);font-weight:600;line-height:0.92;color:var(--white);margin-bottom:1.5rem}
+    .gut-hero-title span{color:var(--orange)}
+    .gut-hero-sub{font-size:0.88rem;color:var(--mid);max-width:480px;margin:0 auto;line-height:1.8}
+    .gut-hero-rule{width:40px;height:1px;background:var(--orange);margin:1.8rem auto}
+
+    /* MAIN LAYOUT */
+    .gut-main{max-width:1060px;margin:0 auto;padding:3rem 2.5rem 6rem}
+
+    /* SEARCH + FILTERS */
+    .map-search-wrap{position:relative;display:flex;gap:0.6rem;align-items:stretch;margin-bottom:0.8rem}
+    #mapSearch{flex:1;background:var(--card);border:1px solid var(--border);color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.85rem;padding:0.7rem 1rem;outline:none;transition:border-color 0.3s}
+    #mapSearch:focus{border-color:var(--orange)}
+    #mapSearchDropdown{display:none;position:absolute;top:100%;left:0;width:calc(100% - 110px);background:var(--card);border:1px solid var(--orange);border-top:none;z-index:200;max-height:280px;overflow-y:auto}
+    .search-suggestion{padding:0.65rem 1rem;font-size:0.82rem;color:var(--light);cursor:pointer;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;transition:background 0.2s}
+    .search-suggestion:last-child{border-bottom:none}
+    .search-suggestion:hover,.search-suggestion.highlighted{background:var(--orange-dim);color:var(--white)}
+    .search-suggestion-sub{font-size:0.7rem;color:var(--mid)}
+    #map-filter-btn{background:none;border:1px solid var(--border);color:var(--mid);font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;padding:0 1rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color 0.3s,border-color 0.3s,background 0.3s;display:flex;align-items:center;gap:0.4rem;white-space:nowrap;flex-shrink:0}
+    #map-filter-btn:hover{color:var(--white);border-color:var(--white)}
+    #map-filter-btn.has-filters{color:var(--orange);border-color:var(--orange);background:var(--orange-dim)}
+    .filter-badge{display:inline-flex;align-items:center;justify-content:center;background:var(--orange);color:#111;font-size:0.6rem;font-weight:600;width:16px;height:16px;border-radius:50%}
+
+    /* FILTER PANEL */
+    #map-filter-panel{display:none;border:1px solid var(--border);background:var(--card);padding:1.5rem;margin-bottom:1rem}
+    #map-filter-panel.open{display:block}
+    .filter-panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
+    .filter-panel-title{font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--orange)}
+    .filter-clear-btn{background:none;border:none;color:var(--mid);font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color 0.3s;padding:0}
+    .filter-clear-btn:hover{color:var(--orange)}
+    .filter-section{margin-bottom:1.2rem}
+    .filter-section:last-child{margin-bottom:0}
+    .filter-section-label{font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);margin-bottom:0.5rem}
+    .map-filter-btns{display:flex;flex-wrap:wrap;gap:0.45rem}
+    .map-filter{background:none;border:1px solid var(--border);color:var(--mid);font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.32rem 0.75rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color 0.25s,border-color 0.25s,background 0.25s}
+    .map-filter:hover{color:var(--white);border-color:var(--white)}
+    .map-filter.active{color:var(--orange);border-color:var(--orange);background:var(--orange-dim)}
+
+    /* MAP CONTROLS */
+    .map-controls{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1rem}
+    .map-legend{display:flex;gap:1.5rem;align-items:center}
+    .legend-item{display:flex;align-items:center;gap:0.5rem;font-size:0.73rem;letter-spacing:0.07em;text-transform:uppercase;color:var(--mid)}
+    .legend-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+    .legend-dot.visited{background:#4caf82;box-shadow:0 0 6px rgba(76,175,130,0.5)}
+    .legend-dot.wishlist{background:#e8621a;box-shadow:0 0 6px rgba(232,98,26,0.5)}
+    .map-counter{font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid)}
+    .map-counter span{color:var(--orange);font-weight:500}
+
+    /* MAP */
+    #map{width:100%;height:560px;border:1px solid var(--border)}
+    .leaflet-popup-content-wrapper{background:#211f18!important;border:1px solid #33301f!important;border-radius:0!important;box-shadow:0 8px 32px rgba(0,0,0,0.5)!important;color:#c8bfaa!important}
+    .leaflet-popup-tip{background:#211f18!important}
+    .leaflet-popup-close-button{color:#7a7060!important;font-size:1.1rem!important;top:8px!important;right:10px!important}
+    .leaflet-popup-close-button:hover{color:#e8621a!important}
+    .map-popup-name{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600;color:#f0ece3;margin-bottom:0.25rem}
+    .map-popup-meta{font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#7a7060;margin-bottom:0.6rem}
+    .map-popup-stars{font-size:0.85rem;margin-bottom:0.5rem}
+    .map-popup-note{font-size:0.82rem;color:#c8bfaa;line-height:1.6;margin-bottom:0.7rem}
+    .map-popup-badge{display:inline-block;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.22rem 0.6rem;margin-bottom:0.7rem}
+    .map-popup-badge.visited{background:rgba(76,175,130,0.15);color:#4caf82;border:1px solid rgba(76,175,130,0.35)}
+    .map-popup-badge.wishlist{background:rgba(232,98,26,0.12);color:#e8621a;border:1px solid rgba(232,98,26,0.35)}
+
+    /* ACTION BUTTONS */
+    .gut-actions{display:flex;align-items:center;gap:0.8rem;margin-bottom:1rem;flex-wrap:wrap}
+    .dice-btn{display:inline-flex;align-items:center;gap:0.6rem;background:var(--orange);color:#111;border:none;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.7rem 1.4rem;cursor:pointer;transition:opacity 0.3s,transform 0.2s}
+    .dice-btn:hover{opacity:0.88;transform:scale(1.02)}
+    .dice-btn:active{transform:scale(0.97)}
+    .dice-emoji{font-size:1.1rem}
+    @keyframes roll{0%{transform:rotate(0)}25%{transform:rotate(90deg)}50%{transform:rotate(180deg)}75%{transform:rotate(270deg)}100%{transform:rotate(360deg)}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    #locate-me-btn{display:inline-flex;align-items:center;gap:0.5rem;background:none;border:1px solid var(--border);color:var(--mid);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.55rem 1rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color 0.3s,border-color 0.3s}
+    #locate-me-btn:hover{color:var(--white);border-color:var(--white)}
+    #contrib-toggle{background:none;border:1px solid var(--border);color:var(--mid);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.4rem 0.9rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color 0.3s,border-color 0.3s}
+    #contrib-toggle:hover{color:var(--orange);border-color:var(--orange)}
+
+    /* DICE RESULT */
+    #diceResult{display:none;margin-bottom:1rem;border:1px solid var(--orange);background:var(--orange-dim);padding:1.2rem 1.5rem;animation:fadeUp 0.4s ease forwards}
+    #diceResult.show{display:block}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    .dice-result-label{font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--orange);margin-bottom:0.4rem}
+    .dice-result-name{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--white);margin-bottom:0.2rem}
+    .dice-result-meta{font-size:0.72rem;letter-spacing:0.08em;color:var(--mid);margin-bottom:0.6rem}
+    .dice-result-note{font-size:0.82rem;color:var(--light);line-height:1.6}
+    .dice-goto{display:inline-block;margin-top:0.7rem;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--orange);border:1px solid rgba(232,98,26,0.4);padding:0.3rem 0.8rem;cursor:pointer;background:none;font-family:'DM Sans',sans-serif;transition:background 0.25s}
+    .dice-goto:hover{background:var(--orange);color:#111}
+
+    /* CONTRIBUTOR PANEL */
+    #contrib-panel{display:none;margin-top:1rem;border:1px solid var(--border);background:var(--card);padding:1.5rem;margin-bottom:1rem}
+    #contrib-panel.open{display:block}
+    .contrib-field{margin-bottom:0.8rem}
+    .contrib-field label{display:block;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);margin-bottom:0.35rem}
+    .contrib-field input,.contrib-field textarea,.contrib-field select{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.82rem;padding:0.55rem 0.8rem;outline:none;transition:border-color 0.3s}
+    .contrib-field input:focus,.contrib-field textarea:focus,.contrib-field select:focus{border-color:var(--orange)}
+    .contrib-field textarea{resize:vertical;min-height:70px}
+    .contrib-field select option{background:var(--card)}
+    .contrib-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem}
+    .contrib-submit{background:var(--orange);color:#111;border:none;font-family:'DM Sans',sans-serif;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.65rem 1.4rem;cursor:pointer;transition:opacity 0.3s}
+    .contrib-submit:hover{opacity:0.85}
+    #contrib-success{display:none;color:#4caf82;font-size:0.82rem;margin-top:0.6rem}
+    #contrib-key-status{font-size:0.78rem;color:var(--mid);min-height:1.2em}
+
+    /* MAP LOADING */
+    #map-loading{display:none;position:absolute;inset:0;background:rgba(19,18,16,0.85);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:0.8rem}
+    #map-wrap{position:relative}
+
+    footer{text-align:center;padding:1.5rem 2rem;font-size:0.7rem;letter-spacing:0.08em;color:var(--mid);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:2rem;flex-wrap:wrap}
+    footer a{color:var(--mid);text-decoration:none;transition:color 0.3s}
+    footer a:hover{color:var(--orange)}
+
+    @media(max-width:768px){nav{padding:1rem 1.5rem}.gut-main{padding:2rem 1.5rem 4rem}#map{height:420px}#mapSearchDropdown{width:100%}.contrib-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+  <!-- ══ AUTH SCREEN ══ -->
+  <div id="auth-screen">
+    <div class="auth-logo">R<span>.</span>K</div>
+    <div class="auth-tagline">Gut Instincts</div>
+    <div class="auth-gut-sub">100+ halal spots. Sign in to explore.</div>
+
+    <div class="auth-box">
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active" id="tab-login-btn" onclick="switchToLogin()">Sign In</button>
+        <button class="auth-tab-btn" id="tab-signup-btn" onclick="switchToSignup()">Create Account</button>
+      </div>
+
+      <div class="auth-view active" id="auth-login-view">
+        <div class="auth-field">
+          <label>Email Address</label>
+          <input type="email" id="auth-email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')doLogin()"/>
+        </div>
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="auth-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+        </div>
+        <button class="auth-btn" id="auth-login-btn" onclick="doLogin()">Sign In →</button>
+        <div class="auth-error" id="auth-error"></div>
+      </div>
+
+      <div class="auth-view" id="auth-signup-view">
+        <div class="auth-field">
+          <label>Email Address</label>
+          <input type="email" id="auth-signup-email" placeholder="you@example.com"/>
+        </div>
+        <div class="auth-field">
+          <label>Password (min. 6 characters)</label>
+          <input type="password" id="auth-signup-password" placeholder="Choose a password" onkeydown="if(event.key==='Enter')doSignup()"/>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input type="password" id="auth-signup-password2" placeholder="Repeat your password" onkeydown="if(event.key==='Enter')doSignup()"/>
+        </div>
+        <button class="auth-btn" id="auth-signup-btn" onclick="doSignup()">Create Account →</button>
+        <div class="auth-error" id="auth-signup-error"></div>
+      </div>
+
+      <div class="auth-view" id="auth-verify-view">
+        <div class="auth-verify-icon">📬</div>
+        <div class="auth-verify-title">Check your email</div>
+        <div class="auth-verify-text">We've sent a verification link to:</div>
+        <div class="auth-verify-email" id="auth-verify-email-shown"></div>
+        <div class="auth-verify-text" style="margin-bottom:1.5rem;">Click the link in that email to verify your account. Once done, come back and sign in.</div>
+        <button class="auth-resend-btn" id="auth-resend-btn" onclick="resendVerifyEmail()">Resend Email</button><br>
+        <span class="auth-back-link" onclick="switchToLogin()">← Back to sign in</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SITE (shown after auth) ══ -->
+  <div id="site-wrapper">
+
+    <nav>
+      <a href="index.html" class="nav-back">← Back to portfolio</a>
+      <div class="nav-gut-title">Gut <span>Instincts</span> 🗺️</div>
+      <div class="nav-controls">
+        <span id="nav-user-email"></span>
+        <button class="nav-btn" onclick="toggleTheme()" id="themeBtn">☀ Light</button>
+        <button id="nav-logout-btn" onclick="doLogout()">Sign Out</button>
+      </div>
+    </nav>
+
+    <div class="gut-hero">
+      <div class="gut-hero-bg"></div>
+      <div class="gut-hero-label">Riaz's London</div>
+      <div class="gut-hero-title">Gut<br><span>Instincts</span></div>
+      <div class="gut-hero-rule"></div>
+      <div class="gut-hero-sub">Because your stomach always knows best. 100+ halal spots across London — rated, reviewed, and mapped by someone who takes this very seriously.</div>
+    </div>
+
+    <div class="gut-main">
+
+      <!-- Search + Filter -->
+      <div style="margin-bottom:0.8rem;">
+        <div class="map-search-wrap">
+          <input id="mapSearch" type="search" placeholder="Search spots, areas, cuisines..."
+            oninput="handleSearchInput(this.value)"
+            onfocus="showDropdownIfHasValue()"
+            onblur="setTimeout(hideDropdown,150)"
+            onkeydown="handleSearchKeydown(event)"/>
+          <div id="mapSearchDropdown"></div>
+          <button id="map-filter-btn" onclick="toggleFilterPanel()">
+            ⚙ Filters <span class="filter-badge" id="filter-badge" style="display:none;">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Panel -->
+      <div id="map-filter-panel">
+        <div class="filter-panel-header">
+          <span class="filter-panel-title">Filters</span>
+          <button class="filter-clear-btn" onclick="clearAllFilters()">Clear all</button>
+        </div>
+        <div class="filter-section">
+          <div class="filter-section-label">Status</div>
+          <div class="map-filter-btns">
+            <button class="map-filter active" data-map-filter="status" data-val="all">All</button>
+            <button class="map-filter" data-map-filter="status" data-val="visited">✓ Visited</button>
+            <button class="map-filter" data-map-filter="status" data-val="wishlist">♡ Wishlist</button>
+          </div>
+        </div>
+        <div class="filter-section">
+          <div class="filter-section-label">Category</div>
+          <div class="map-filter-btns">
+            <button class="map-filter active" data-map-filter="cat" data-val="all">All</button>
+            <button class="map-filter" data-map-filter="cat" data-val="food">🍔 Food</button>
+            <button class="map-filter" data-map-filter="cat" data-val="dessert">🍰 Desserts</button>
+            <button class="map-filter" data-map-filter="cat" data-val="cafe">☕ Cafes</button>
+          </div>
+        </div>
+        <div class="filter-section">
+          <div class="filter-section-label">Cuisine</div>
+          <div class="map-filter-btns">
+            <button class="map-filter active" data-map-filter="cuisine" data-val="all">All</button>
+            <button class="map-filter" data-map-filter="cuisine" data-val="american">🍟 American</button>
+            <button class="map-filter" data-map-filter="cuisine" data-val="asian">🍜 Asian</button>
+            <button class="map-filter" data-map-filter="cuisine" data-val="panasian">🥢 Pan Asian</button>
+            <button class="map-filter" data-map-filter="cuisine" data-val="italian">🍝 Italian</button>
+            <button class="map-filter" data-map-filter="cuisine" data-val="middleeastern">🥙 Middle Eastern</button>
+            <button class="map-filter" data-map-filter="cuisine" data-val="turkish">🥗 Turkish</button>
+            <button class="map-filter" data-map-filter="cuisine" data-val="indian">🍛 Indian</button>
+            <button class="map-filter" data-map-filter="cuisine" data-val="chicken">🍗 Chicken</button>
+            <button class="map-filter" data-map-filter="cuisine" data-val="pizza">🍕 Pizza</button>
+            <button class="map-filter" data-map-filter="cuisine" data-val="kebab">🫕 Kebab</button>
+            <button class="map-filter" data-map-filter="cuisine" data-val="burgers">🍔 Burgers</button>
+            <button class="map-filter" data-map-filter="cuisine" data-val="seafood">🦐 Seafood</button>
+            <button class="map-filter" data-map-filter="cuisine" data-val="desserts">🍮 Sweets</button>
+            <button class="map-filter" data-map-filter="cuisine" data-val="mixed">🍽 Mixed</button>
+          </div>
+        </div>
+        <div class="filter-section">
+          <div class="filter-section-label">Area</div>
+          <div class="map-filter-btns">
+            <button class="map-filter active" data-map-filter="area" data-val="all">All London</button>
+            <button class="map-filter" data-map-filter="area" data-val="east">East London</button>
+            <button class="map-filter" data-map-filter="area" data-val="north">North London</button>
+            <button class="map-filter" data-map-filter="area" data-val="west">West London</button>
+            <button class="map-filter" data-map-filter="area" data-val="central">Central London</button>
+            <button class="map-filter" data-map-filter="area" data-val="south">South London</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="map-controls">
+        <div class="map-legend">
+          <div class="legend-item"><div class="legend-dot visited"></div>Visited</div>
+          <div class="legend-item"><div class="legend-dot wishlist"></div>Wishlist</div>
+        </div>
+        <div class="map-counter">
+          <span id="visitedCount">0</span> visited &nbsp;·&nbsp;
+          <span id="wishlistCount">0</span> on the wishlist &nbsp;·&nbsp;
+          <span id="shownCount">0</span> showing
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="gut-actions">
+        <button class="dice-btn" onclick="rollDice(this)">
+          <span class="dice-emoji">🎲</span> Pick a Random Spot
+        </button>
+        <button id="locate-me-btn" onclick="locateMe()">📍 My Location</button>
+        <button id="contrib-toggle" onclick="toggleContrib()">＋ Suggest a Spot</button>
+      </div>
+
+      <!-- Dice Result -->
+      <div id="diceResult">
+        <div class="dice-result-label">🎲 Tonight's Pick</div>
+        <div class="dice-result-name" id="diceResultName"></div>
+        <div class="dice-result-meta" id="diceResultMeta"></div>
+        <div class="dice-result-note" id="diceResultNote"></div>
+        <button class="dice-goto" onclick="focusDiceSpot()">📍 Show on Map</button>
+      </div>
+
+      <!-- Contributor Panel -->
+      <div id="contrib-panel">
+        <p style="font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--orange);margin-bottom:1rem;">Suggest a Spot</p>
+        <p style="font-size:0.8rem;color:var(--mid);margin-bottom:1rem;">Anyone can suggest a spot — Riaz reviews all suggestions before they go on the map. If you have a contributor key, enter it below to skip the queue.</p>
+        <div style="margin-bottom:0.8rem;">
+          <div class="contrib-field">
+            <label>Contributor Key (optional)</label>
+            <input type="password" id="contribKey" placeholder="Enter key if you have one..." oninput="checkContribKey()"/>
+          </div>
+          <p id="contrib-key-status"></p>
+        </div>
+        <div id="contrib-form">
+          <div class="contrib-grid">
+            <div class="contrib-field"><label>Place Name *</label><input type="text" id="cf-name" placeholder="e.g. Nando's Stratford"/></div>
+            <div class="contrib-field"><label>Full Address *</label><input type="text" id="cf-area" placeholder="e.g. 45 The Mall, Stratford E15"/></div>
+          </div>
+          <div class="contrib-grid">
+            <div class="contrib-field"><label>Area of London</label>
+              <select id="cf-area-zone">
+                <option value="east">East London</option><option value="north">North London</option>
+                <option value="west">West London</option><option value="central">Central London</option>
+                <option value="south">South London</option>
+              </select>
+            </div>
+            <div class="contrib-field"><label>Category</label>
+              <select id="cf-cat">
+                <option value="food">🍔 Food</option><option value="dessert">🍰 Dessert</option><option value="cafe">☕ Cafe</option>
+              </select>
+            </div>
+            <div class="contrib-field"><label>Cuisine</label>
+              <select id="cf-cuisine">
+                <option value="american">American</option><option value="asian">Asian</option>
+                <option value="panasian">Pan Asian</option><option value="italian">Italian</option>
+                <option value="middleeastern">Middle Eastern</option><option value="turkish">Turkish</option>
+                <option value="indian">Indian</option><option value="chicken">Chicken</option>
+                <option value="pizza">Pizza</option><option value="kebab">Kebab</option>
+                <option value="burgers">Burgers</option><option value="seafood">Seafood</option>
+                <option value="desserts">Sweets/Desserts</option><option value="mixed">Mixed</option>
+              </select>
+            </div>
+            <div class="contrib-field"><label>Confirmed Halal?</label>
+              <select id="cf-halal">
+                <option value="yes">Yes — confirmed halal</option>
+                <option value="assumed">Assumed (Muslim-owned / no pork)</option>
+                <option value="unsure">Not sure — Riaz to check</option>
+              </select>
+            </div>
+          </div>
+          <div class="contrib-field"><label>Your name / who's suggesting this</label><input type="text" id="cf-suggester" placeholder="e.g. Sarah, or leave blank"/></div>
+          <div class="contrib-field"><label>Your note / why you're recommending it</label><textarea id="cf-note" placeholder="What's good here? Any must-orders?"></textarea></div>
+          <div id="contrib-geo-status" style="font-size:0.75rem;color:var(--mid);margin-bottom:0.6rem;min-height:1.3em;"></div>
+          <button class="contrib-submit" onclick="submitContrib()">Submit Suggestion →</button>
+          <div id="contrib-success">✓ Suggestion sent! It'll appear on the map once Riaz approves it.</div>
+        </div>
+      </div>
+
+      <!-- Map -->
+      <div id="map-wrap">
+        <div id="map"></div>
+        <div id="map-loading">
+          <div style="width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--orange);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+          <span style="font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);">Loading spots…</span>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <span>© 2026 Riaz Khan</span>
+      <a href="index.html">← Back to portfolio</a>
+      <span style="color:var(--mid);font-style:italic;font-size:0.65rem;">All spots are halal. Verify status directly with each restaurant.</span>
+    </footer>
+
+  </div><!-- /#site-wrapper -->
+
+  <script>
+    var SUPABASE_URL      = 'https://vhymwetqywpzhtlvpqsd.supabase.co';
+    var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoeW13ZXRxeXdwemh0bHZwcXNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2OTA2NjgsImV4cCI6MjA4NzI2NjY2OH0.nffaclYk7fOlNht0dTe9qEGJy3ec9VcnPfrImtvwjWk';
+    var CONTRIB_KEYS      = ['ALBINO','MUM'];
+    var db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    var mapInitialised = false;
+
+    // ── AUTH ──
+    function showSite(user) {
+      document.getElementById('auth-screen').style.display = 'none';
+      document.getElementById('site-wrapper').style.display = 'block';
+      var emailEl = document.getElementById('nav-user-email');
+      if (emailEl && user.email) emailEl.textContent = user.email;
+      if (!mapInitialised) { mapInitialised = true; initMap(); }
+    }
+
+    function showVerifyScreen(email) {
+      document.getElementById('auth-login-view').classList.remove('active');
+      document.getElementById('auth-signup-view').classList.remove('active');
+      document.getElementById('auth-verify-view').classList.add('active');
+      document.getElementById('tab-login-btn').classList.remove('active');
+      document.getElementById('tab-signup-btn').classList.remove('active');
+      document.getElementById('auth-verify-email-shown').textContent = email||'';
+      document.getElementById('auth-screen').style.display = 'flex';
+    }
+
+    function switchToLogin() {
+      document.getElementById('auth-signup-view').classList.remove('active');
+      document.getElementById('auth-verify-view').classList.remove('active');
+      document.getElementById('auth-login-view').classList.add('active');
+      document.getElementById('tab-signup-btn').classList.remove('active');
+      document.getElementById('tab-login-btn').classList.add('active');
+      document.getElementById('auth-signup-error').textContent='';
+    }
+
+    function switchToSignup() {
+      document.getElementById('auth-login-view').classList.remove('active');
+      document.getElementById('auth-verify-view').classList.remove('active');
+      document.getElementById('auth-signup-view').classList.add('active');
+      document.getElementById('tab-login-btn').classList.remove('active');
+      document.getElementById('tab-signup-btn').classList.add('active');
+      document.getElementById('auth-error').textContent='';
+    }
+
+    async function doLogin() {
+      var email=(document.getElementById('auth-email').value||'').trim();
+      var pass=document.getElementById('auth-password').value;
+      var errEl=document.getElementById('auth-error');
+      errEl.textContent='';
+      if(!email||!pass){errEl.textContent='Please enter your email and password.';return}
+      var btn=document.getElementById('auth-login-btn');
+      btn.disabled=true;btn.textContent='Signing in…';
+      var result=await db.auth.signInWithPassword({email:email,password:pass});
+      btn.disabled=false;btn.textContent='Sign In →';
+      if(result.error){errEl.textContent=result.error.message;return}
+      var user=result.data.user;
+      if(!user.email_confirmed_at){showVerifyScreen(email);return}
+      showSite(user);
+    }
+
+    async function doSignup() {
+      var email=(document.getElementById('auth-signup-email').value||'').trim();
+      var pass=document.getElementById('auth-signup-password').value;
+      var pass2=document.getElementById('auth-signup-password2').value;
+      var errEl=document.getElementById('auth-signup-error');
+      errEl.textContent='';
+      if(!email||!pass||!pass2){errEl.textContent='Please fill in all fields.';return}
+      if(pass!==pass2){errEl.textContent='Passwords don\'t match.';return}
+      if(pass.length<6){errEl.textContent='Password must be at least 6 characters.';return}
+      var btn=document.getElementById('auth-signup-btn');
+      btn.disabled=true;btn.textContent='Creating account…';
+      var result=await db.auth.signUp({email:email,password:pass});
+      btn.disabled=false;btn.textContent='Create Account →';
+      if(result.error){errEl.textContent=result.error.message;return}
+      showVerifyScreen(email);
+    }
+
+    async function doLogout(){await db.auth.signOut();location.reload()}
+
+    async function resendVerifyEmail() {
+      var email=document.getElementById('auth-verify-email-shown').textContent;
+      if(!email)return;
+      var btn=document.getElementById('auth-resend-btn');
+      btn.disabled=true;btn.textContent='Sent ✓';
+      await db.auth.resend({type:'signup',email:email});
+      setTimeout(function(){btn.disabled=false;btn.textContent='Resend Email'},5000);
+    }
+
+    db.auth.getSession().then(function(result){
+      var session=result.data.session;
+      if(session&&session.user&&session.user.email_confirmed_at){showSite(session.user)}
+      else if(session&&session.user&&!session.user.email_confirmed_at){showVerifyScreen(session.user.email)}
+      else{document.getElementById('auth-screen').style.display='flex'}
+    });
+
+    db.auth.onAuthStateChange(function(event,session){
+      if((event==='SIGNED_IN'||event==='USER_UPDATED')&&session&&session.user&&session.user.email_confirmed_at)showSite(session.user);
+    });
+
+    // ── THEME ──
+    var isDark=true;
+    function toggleTheme(){isDark=!isDark;document.body.classList.toggle('light',!isDark);var b=document.getElementById('themeBtn');if(b)b.textContent=isDark?'☀ Light':'☾ Dark'}
+
+    // ── MAP STATE ──
+    var allSpots=[],mapMarkers=[],foodMap;
+    var activeFilters={status:'all',cat:'all',cuisine:'all',area:'all'};
+    var searchQuery='',lastDiceSpot=null,selectedSuggestionIdx=-1;
+
+    function toggleFilterPanel(){
+      var p=document.getElementById('map-filter-panel');
+      var b=document.getElementById('map-filter-btn');
+      var open=p.classList.toggle('open');
+      b.setAttribute('aria-expanded',open);
+    }
+
+    function clearAllFilters(){
+      activeFilters={status:'all',cat:'all',cuisine:'all',area:'all'};
+      document.querySelectorAll('.map-filter').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-val')==='all')});
+      document.getElementById('mapSearch').value='';
+      searchQuery='';
+      updateFilterBadge();filterMap();hideDropdown();
+    }
+
+    function updateFilterBadge(){
+      var count=0;
+      if(activeFilters.status!=='all')count++;if(activeFilters.cat!=='all')count++;
+      if(activeFilters.cuisine!=='all')count++;if(activeFilters.area!=='all')count++;
+      var badge=document.getElementById('filter-badge'),btn=document.getElementById('map-filter-btn');
+      if(count>0){badge.textContent=count;badge.style.display='inline-flex';btn.classList.add('has-filters')}
+      else{badge.style.display='none';btn.classList.remove('has-filters')}
+    }
+
+    // ── SEARCH SUGGESTIONS ──
+    function handleSearchInput(val){
+      searchQuery=val;filterMap();
+      if(val.trim().length<2){hideDropdown();return}
+      var q=val.toLowerCase(),matches=[],seen={};
+      allSpots.forEach(function(s){
+        if((s.name||'').toLowerCase().indexOf(q)!==-1&&!seen[s.name]){seen[s.name]=true;matches.push({label:s.name,sub:(s.cuisine||'')+(s.area_zone?' · '+s.area_zone+' London':''),query:s.name})}
+        if((s.area||'').toLowerCase().indexOf(q)!==-1&&!seen['a:'+s.area]){seen['a:'+s.area]=true;matches.push({label:s.area,sub:'Area',query:s.area})}
+        if((s.cuisine||'').toLowerCase().indexOf(q)!==-1&&!seen['c:'+s.cuisine]){seen['c:'+s.cuisine]=true;matches.push({label:s.cuisine.charAt(0).toUpperCase()+s.cuisine.slice(1),sub:'Cuisine',query:s.cuisine})}
+      });
+      matches=matches.slice(0,8);
+      if(!matches.length){hideDropdown();return}
+      var dd=document.getElementById('mapSearchDropdown');dd.innerHTML='';
+      matches.forEach(function(m){
+        var div=document.createElement('div');div.className='search-suggestion';
+        div.innerHTML='<span>'+m.label+'</span><span class="search-suggestion-sub">'+m.sub+'</span>';
+        div.addEventListener('mousedown',function(){document.getElementById('mapSearch').value=m.query;searchQuery=m.query;filterMap();hideDropdown()});
+        dd.appendChild(div);
+      });
+      selectedSuggestionIdx=-1;dd.style.display='block';
+    }
+
+    function handleSearchKeydown(e){
+      var dd=document.getElementById('mapSearchDropdown');
+      if(dd.style.display!=='block')return;
+      var items=dd.querySelectorAll('.search-suggestion');
+      if(e.key==='ArrowDown'){e.preventDefault();selectedSuggestionIdx=Math.min(selectedSuggestionIdx+1,items.length-1);highlightSuggestion(items)}
+      else if(e.key==='ArrowUp'){e.preventDefault();selectedSuggestionIdx=Math.max(selectedSuggestionIdx-1,-1);highlightSuggestion(items)}
+      else if(e.key==='Enter'&&selectedSuggestionIdx>=0){e.preventDefault();items[selectedSuggestionIdx].dispatchEvent(new Event('mousedown'))}
+      else if(e.key==='Escape'){hideDropdown()}
+    }
+
+    function highlightSuggestion(items){items.forEach(function(el,i){el.classList.toggle('highlighted',i===selectedSuggestionIdx)})}
+    function showDropdownIfHasValue(){var v=document.getElementById('mapSearch').value;if(v.trim().length>=2)handleSearchInput(v)}
+    function hideDropdown(){var dd=document.getElementById('mapSearchDropdown');dd.style.display='none';selectedSuggestionIdx=-1}
+
+    // ── MAP INIT ──
+    function initMap(){
+      foodMap=L.map('map',{center:[51.510,-0.09],zoom:11});
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',subdomains:'abcd',maxZoom:19}).addTo(foodMap);
+      loadSpots();
+      document.querySelectorAll('.map-filter').forEach(function(btn){
+        btn.addEventListener('click',function(){
+          var ft=btn.getAttribute('data-map-filter');
+          document.querySelectorAll('.map-filter[data-map-filter="'+ft+'"]').forEach(function(b){b.classList.remove('active')});
+          btn.classList.add('active');activeFilters[ft]=btn.getAttribute('data-val');updateFilterBadge();filterMap();
+        });
+      });
+    }
+
+    function makeIcon(status){
+      var color=status==='visited'?'#4caf82':'#e8621a';
+      var svg='<svg xmlns="http://www.w3.org/2000/svg" width="28" height="38" viewBox="0 0 28 38"><path d="M14 0C6.27 0 0 6.27 0 14c0 9.625 14 24 14 24S28 23.625 28 14C28 6.27 21.73 0 14 0z" fill="'+color+'"/><circle cx="14" cy="14" r="5.5" fill="white" opacity="0.9"/></svg>';
+      return L.divIcon({html:svg,className:'',iconSize:[28,38],iconAnchor:[14,38],popupAnchor:[0,-40]});
+    }
+
+    function starsHtml(r){if(r===null||r===undefined)return'';var s='';for(var i=1;i<=5;i++)s+=r>=i?'⭐':(r>=i-0.5?'✨':'☆');return s}
+
+    function buildPopup(spot){
+      var catBadge=spot.cat==='dessert'?'🍰':spot.cat==='cafe'?'☕':'🍔';
+      var ratingHtml=spot.rating!==null&&spot.rating!==undefined?'<div class="map-popup-stars">'+starsHtml(spot.rating)+' '+spot.rating+'/5</div>':'<div style="font-size:0.7rem;color:#e8621a;margin-bottom:0.5rem;">Not visited yet</div>';
+      return '<div style="min-width:200px;padding:4px 2px"><div class="map-popup-badge '+spot.status+'">'+(spot.status==='visited'?'✓ Visited':'♡ Wishlist')+'</div><div class="map-popup-name">'+catBadge+' '+(spot.name||'')+'</div><div class="map-popup-meta">'+(spot.cuisine||'')+' &middot; '+(spot.area||'')+'</div>'+ratingHtml+'<div class="map-popup-note">'+(spot.note||'')+'</div></div>';
+    }
+
+    function addMarker(spot){var m=L.marker([spot.lat,spot.lng],{icon:makeIcon(spot.status)});m.bindPopup(buildPopup(spot),{maxWidth:280});m._spot=spot;mapMarkers.push(m)}
+
+    function updateCounts(){
+      var visited=allSpots.filter(function(s){return s.status==='visited'}).length;
+      var wishlist=allSpots.filter(function(s){return s.status==='wishlist'}).length;
+      document.getElementById('visitedCount').textContent=visited;
+      document.getElementById('wishlistCount').textContent=wishlist;
+    }
+
+    function spotMatchesFilters(spot){
+      if(activeFilters.status!=='all'&&spot.status!==activeFilters.status)return false;
+      if(activeFilters.cat!=='all'&&spot.cat!==activeFilters.cat)return false;
+      if(activeFilters.cuisine!=='all'&&spot.cuisine!==activeFilters.cuisine)return false;
+      if(activeFilters.area!=='all'&&spot.area_zone!==activeFilters.area)return false;
+      if(searchQuery){var q=searchQuery.toLowerCase();if((spot.name||'').toLowerCase().indexOf(q)===-1&&(spot.area||'').toLowerCase().indexOf(q)===-1&&(spot.cuisine||'').toLowerCase().indexOf(q)===-1&&(spot.note||'').toLowerCase().indexOf(q)===-1)return false}
+      return true;
+    }
+
+    function filterMap(){
+      if(!foodMap)return;
+      var shown=0;
+      mapMarkers.forEach(function(m){if(spotMatchesFilters(m._spot)){if(!foodMap.hasLayer(m))m.addTo(foodMap);shown++}else{if(foodMap.hasLayer(m))foodMap.removeLayer(m)}});
+      document.getElementById('shownCount').textContent=shown;
+    }
+
+    async function loadSpots(){
+      var loadEl=document.getElementById('map-loading');if(loadEl)loadEl.style.display='flex';
+      var result=await db.from('food_spots').select('*').eq('approved',true).order('name');
+      if(loadEl)loadEl.style.display='none';
+      if(result.error){console.error('Could not load spots:',result.error.message);return}
+      allSpots=result.data||[];mapMarkers=[];allSpots.forEach(function(s){addMarker(s)});
+      updateCounts();filterMap();
+      db.channel('live_spots').on('postgres_changes',{event:'UPDATE',schema:'public',table:'food_spots'},function(payload){
+        var s=payload.new;if(!s.approved)return;
+        var exists=allSpots.some(function(x){return x.id===s.id});
+        if(!exists){allSpots.push(s);addMarker(s);updateCounts();filterMap()}
+      }).subscribe();
+    }
+
+    // ── DICE ──
+    function rollDice(btn){
+      var pool=allSpots.filter(function(s){return s.status==='wishlist'&&spotMatchesFilters(s)});
+      if(!pool.length)pool=allSpots.filter(function(s){return s.status==='wishlist'});
+      if(!pool.length)return;
+      var spot=pool[Math.floor(Math.random()*pool.length)];lastDiceSpot=spot;
+      var emoji=btn.querySelector('.dice-emoji');emoji.style.animation='none';void emoji.offsetWidth;emoji.style.animation='roll 0.4s ease';
+      document.getElementById('diceResultName').textContent=spot.name;
+      document.getElementById('diceResultMeta').textContent=(spot.cuisine||'')+' · '+(spot.area||'');
+      document.getElementById('diceResultNote').textContent=spot.note||'';
+      var res=document.getElementById('diceResult');res.classList.remove('show');void res.offsetWidth;res.classList.add('show');
+    }
+
+    function focusDiceSpot(){
+      if(!lastDiceSpot)return;
+      foodMap.setView([lastDiceSpot.lat,lastDiceSpot.lng],15,{animate:true});
+      mapMarkers.forEach(function(m){if(m._spot.id===lastDiceSpot.id)m.openPopup()});
+      document.getElementById('map').scrollIntoView({behavior:'smooth',block:'center'});
+    }
+
+    // ── CONTRIBUTOR ──
+    function checkContribKey(){
+      var val=(document.getElementById('contribKey').value||'').trim().toUpperCase();
+      var statusEl=document.getElementById('contrib-key-status');if(!val){statusEl.textContent='';return}
+      if(CONTRIB_KEYS.map(function(k){return k.toUpperCase()}).indexOf(val)!==-1){statusEl.textContent='✓ Trusted contributor — your suggestion will go straight to the map!';statusEl.style.color='#4caf82'}
+      else{statusEl.textContent='✗ Key not recognised — your suggestion will go to Riaz for review.';statusEl.style.color='var(--mid)'}
+    }
+
+    function toggleContrib(){document.getElementById('contrib-panel').classList.toggle('open')}
+
+    async function geocodeAddress(address){
+      var url='https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(address+', London, UK')+'&format=json&limit=1';
+      try{var r=await fetch(url,{headers:{'User-Agent':'RiazFoodMap/1.0 (riazkhan1012.github.io)','Accept-Language':'en'}});var d=await r.json();if(d.length>0)return{lat:parseFloat(d[0].lat),lng:parseFloat(d[0].lon),display:d[0].display_name}}catch(e){console.error('Geocode failed:',e)}return null;
+    }
+
+    async function submitContrib(){
+      var name=(document.getElementById('cf-name').value||'').trim();
+      var address=(document.getElementById('cf-area').value||'').trim();
+      var note=(document.getElementById('cf-note').value||'').trim();
+      var suggester=(document.getElementById('cf-suggester').value||'').trim();
+      var keyVal=(document.getElementById('contribKey').value||'').trim().toUpperCase();
+      var geoEl=document.getElementById('contrib-geo-status');
+      var isTrusted=CONTRIB_KEYS.map(function(k){return k.toUpperCase()}).indexOf(keyVal)!==-1;
+      if(!name||!address){geoEl.textContent='⚠ Please fill in the name and address.';geoEl.style.color='#e8621a';return}
+      geoEl.style.color='var(--mid)';geoEl.textContent='📍 Locating on map…';
+      var coords=await geocodeAddress(address);
+      if(!coords){geoEl.textContent='❌ Couldn\'t find that address. Try adding a postcode.';geoEl.style.color='#e8621a';return}
+      geoEl.textContent='✓ Found: '+coords.display.split(',').slice(0,3).join(',');geoEl.style.color='#4caf82';
+      var spot={name:name,area:address,area_zone:document.getElementById('cf-area-zone').value,cat:document.getElementById('cf-cat').value,cuisine:document.getElementById('cf-cuisine').value,status:'wishlist',rating:null,note:note,lat:coords.lat,lng:coords.lng,approved:isTrusted,suggested_by:isTrusted?keyVal:(suggester||'public')};
+      var res=await db.from('food_spots').insert(spot);
+      if(res.error){geoEl.textContent='❌ Error: '+res.error.message;geoEl.style.color='#e8621a';return}
+      if(isTrusted){var newSpot=Object.assign({},spot,{id:Date.now()+''});allSpots.push(newSpot);addMarker(newSpot);filterMap();updateCounts();document.getElementById('contrib-success').textContent='✓ Added straight to the map!'}
+      else{document.getElementById('contrib-success').textContent='✓ Suggestion sent — Riaz will review it and add it to the map.'}
+      document.getElementById('contrib-success').style.display='block';
+      ['cf-name','cf-area','cf-note','cf-suggester'].forEach(function(id){document.getElementById(id).value=''});
+      geoEl.textContent='';setTimeout(function(){document.getElementById('contrib-success').style.display='none'},6000);
+    }
+
+    // ── MY LOCATION ──
+    function locateMe(){
+      var btn=document.getElementById('locate-me-btn');
+      if(!navigator.geolocation){alert('Your browser doesn\'t support location.');return}
+      btn.textContent='⏳ Finding you…';btn.style.color='var(--orange)';
+      navigator.geolocation.getCurrentPosition(
+        function(pos){
+          foodMap.setView([pos.coords.latitude,pos.coords.longitude],15,{animate:true});
+          L.circleMarker([pos.coords.latitude,pos.coords.longitude],{radius:10,fillColor:'#4c9faf',color:'#fff',weight:2,opacity:1,fillOpacity:0.85}).addTo(foodMap).bindPopup('📍 You are here').openPopup();
+          btn.textContent='📍 My Location';btn.style.color='';
+        },
+        function(){btn.textContent='📍 My Location';btn.style.color='';alert('Couldn\'t get your location. Check your browser permissions.')}
+      );
+    }
+  </script>
+</body>
+</html>
