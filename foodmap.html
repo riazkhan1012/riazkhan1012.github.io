@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Riaz's Food Map — Halal London</title>
+  <meta name="description" content="Riaz Khan's halal food map of London — 100+ spots rated and reviewed."/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231a1410'/><text y='72' x='50' text-anchor='middle' font-size='60' font-family='Georgia,serif' fill='%23e8621a'>R</text></svg>"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <meta name="theme-color" content="#131210"/>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:         #131210;
+      --surface:    #1c1a15;
+      --card:       #211f18;
+      --border:     #33301f;
+      --mid:        #7a7060;
+      --light:      #c8bfaa;
+      --white:      #f0ece3;
+      --orange:     #e8621a;
+      --orange-dim: rgba(232,98,26,0.12);
+      --green:      #4caf82;
+    }
+
+    body.light-mode {
+      --bg:         #f5f1ea;
+      --surface:    #ece8e0;
+      --card:       #ffffff;
+      --border:     #d8d3c8;
+      --mid:        #8a8070;
+      --light:      #4a4540;
+      --white:      #1a1814;
+      --orange:     #c94e12;
+      --orange-dim: rgba(201,78,18,0.10);
+      --green:      #3a9e6e;
+    }
+    body.light-mode { background: var(--bg); color: var(--white); }
+    body.light-mode nav { background: rgba(245,241,234,0.95); }
+    /* Leaflet map tiles: dark tile stays, but UI around it adapts */
+    body.light-mode .leaflet-popup-content-wrapper { background: #fff !important; border-color: #d8d3c8 !important; color: #4a4540 !important; }
+    body.light-mode .leaflet-popup-tip { background: #fff !important; }
+    body.light-mode .map-popup-name { color: #1a1814; }
+    body.light-mode .map-popup-note { color: #4a4540; }
+    body.light-mode .map-popup-meta { color: #8a8070; }
+    body.light-mode #auth-screen { background: var(--bg); }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--white); font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; }
+
+    /* ── AUTH SCREEN ── */
+    #auth-screen {
+      display: none;
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg);
+      align-items: center; justify-content: center;
+      flex-direction: column; padding: 2rem;
+    }
+    .auth-back { position: absolute; top: 1.5rem; left: 1.5rem; }
+    .auth-back a { color: var(--mid); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; transition: color 0.3s; }
+    .auth-back a:hover { color: var(--orange); }
+    .auth-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.12em; color: var(--white); margin-bottom: 0.3rem; text-align: center; }
+    .auth-logo span { color: var(--orange); }
+    .auth-tagline { font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--mid); margin-bottom: 2.5rem; text-align: center; }
+    .auth-box { background: var(--card); border: 1px solid var(--border); width: 100%; max-width: 400px; padding: 2.5rem; }
+    .auth-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+    .auth-tab-btn { flex: 1; background: none; border: none; border-bottom: 2px solid transparent; position: relative; bottom: -1px; padding: 0.7rem 0; font-family: 'DM Sans', sans-serif; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid); cursor: pointer; transition: color 0.3s, border-color 0.3s; }
+    .auth-tab-btn.active { color: var(--orange); border-bottom-color: var(--orange); }
+    .auth-tab-btn:hover { color: var(--white); }
+    .auth-view { display: none; }
+    .auth-view.active { display: block; }
+    .auth-field { margin-bottom: 1rem; }
+    .auth-field label { display: block; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--mid); margin-bottom: 0.4rem; }
+    .auth-field input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.88rem; padding: 0.65rem 0.9rem; outline: none; transition: border-color 0.3s; }
+    .auth-field input:focus { border-color: var(--orange); }
+    .auth-btn { width: 100%; background: var(--orange); color: #111; border: none; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.85rem; cursor: pointer; transition: opacity 0.3s; margin-top: 0.5rem; }
+    .auth-btn:hover { opacity: 0.87; }
+    .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .auth-error { color: #e84a4a; font-size: 0.78rem; margin-top: 0.7rem; min-height: 1.2em; line-height: 1.5; }
+    #auth-verify-view { text-align: center; }
+    .auth-verify-icon { font-size: 2.8rem; margin-bottom: 1rem; }
+    .auth-verify-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; color: var(--orange); margin-bottom: 0.8rem; }
+    .auth-verify-text { font-size: 0.85rem; color: var(--light); line-height: 1.8; margin-bottom: 0.4rem; }
+    .auth-verify-email { font-size: 0.85rem; color: var(--orange); font-weight: 500; margin-bottom: 1.5rem; word-break: break-all; }
+    .auth-resend-btn { background: none; border: 1px solid var(--border); color: var(--mid); font-family: 'DM Sans', sans-serif; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.5rem 1.2rem; cursor: pointer; transition: color 0.3s, border-color 0.3s; margin-bottom: 1.2rem; }
+    .auth-resend-btn:hover { color: var(--orange); border-color: var(--orange); }
+    .auth-back-link { font-size: 0.72rem; color: var(--mid); cursor: pointer; letter-spacing: 0.08em; text-decoration: underline; transition: color 0.3s; }
+    .auth-back-link:hover { color: var(--orange); }
+
+    /* ── SITE ── */
+    #site-wrapper { display: none; min-height: 100vh; }
+
+    /* NAV */
+    nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; background: rgba(19,18,16,0.92); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); gap: 1rem; }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.12em; color: var(--white); text-decoration: none; }
+    .nav-logo span { color: var(--orange); }
+    .nav-back { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid); text-decoration: none; transition: color 0.3s; display: flex; align-items: center; gap: 0.4rem; }
+    .nav-back:hover { color: var(--orange); }
+    .nav-right { display: flex; align-items: center; gap: 0.6rem; }
+    .nav-btn { background: none; border: 1px solid var(--border); color: var(--mid); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.3rem 0.65rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: color 0.3s, border-color 0.3s; }
+    .nav-btn:hover { color: var(--orange); border-color: var(--orange); }
+    #nav-user-email { font-size: 0.62rem; color: var(--mid); max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* MAIN CONTENT */
+    .map-page { padding: 2rem; max-width: 1100px; margin: 0 auto; }
+    .page-header { margin-bottom: 2rem; }
+    .page-label { font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.6rem; }
+    .page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 600; color: var(--white); margin-bottom: 0.5rem; }
+    .page-desc { font-size: 0.85rem; color: var(--mid); }
+
+    /* SEARCH + FILTER ROW */
+    .search-filter-row { display: flex; gap: 0.6rem; margin-bottom: 1rem; align-items: stretch; position: relative; }
+    .search-wrap { position: relative; flex: 1; }
+    #mapSearch { width: 100%; background: var(--card); border: 1px solid var(--border); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; padding: 0.7rem 1rem; outline: none; transition: border-color 0.3s; }
+    #mapSearch:focus { border-color: var(--orange); }
+    #mapSearch::placeholder { color: var(--mid); }
+
+    /* AUTOCOMPLETE DROPDOWN */
+    #autocomplete-list { position: absolute; top: 100%; left: 0; right: 0; background: var(--card); border: 1px solid var(--orange); border-top: none; z-index: 300; max-height: 240px; overflow-y: auto; display: none; }
+    #autocomplete-list.open { display: block; }
+    .autocomplete-item { padding: 0.55rem 1rem; font-size: 0.82rem; color: var(--light); cursor: pointer; display: flex; align-items: center; gap: 0.6rem; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    .autocomplete-item:last-child { border-bottom: none; }
+    .autocomplete-item:hover, .autocomplete-item.highlighted { background: var(--orange-dim); color: var(--white); }
+    .autocomplete-item .ac-type { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); margin-left: auto; }
+    .autocomplete-item .ac-match { color: var(--orange); }
+    .autocomplete-section-head { padding: 0.3rem 1rem; font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); background: var(--surface); border-bottom: 1px solid var(--border); }
+
+    /* FILTER BUTTON */
+    #filter-btn { background: var(--card); border: 1px solid var(--border); color: var(--mid); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.7rem 1rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: color 0.3s, border-color 0.3s; white-space: nowrap; display: flex; align-items: center; gap: 0.5rem; position: relative; }
+    #filter-btn:hover, #filter-btn.active { color: var(--orange); border-color: var(--orange); background: var(--orange-dim); }
+    #filter-count { display: none; min-width: 18px; height: 18px; background: var(--orange); color: #111; font-size: 0.6rem; font-weight: 700; border-radius: 9px; padding: 0 4px; align-items: center; justify-content: center; line-height: 1; }
+    #filter-count.show { display: inline-flex; }
+
+    /* FILTER PANEL (slide-in drawer style) */
+    #filter-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 400; }
+    #filter-backdrop.open { display: block; }
+    #filter-panel { position: fixed; top: 0; right: -380px; width: 360px; max-width: 95vw; height: 100vh; background: var(--surface); border-left: 1px solid var(--border); z-index: 401; display: flex; flex-direction: column; transition: right 0.3s ease; overflow: hidden; }
+    #filter-panel.open { right: 0; }
+    .filter-panel-head { padding: 1.4rem 1.6rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+    .filter-panel-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--orange); }
+    .filter-panel-close { background: none; border: none; color: var(--mid); font-size: 1.2rem; cursor: pointer; transition: color 0.3s; padding: 0.2rem; }
+    .filter-panel-close:hover { color: var(--orange); }
+    .filter-panel-body { flex: 1; overflow-y: auto; padding: 1.4rem 1.6rem; }
+    .filter-section { margin-bottom: 1.8rem; }
+    .filter-section-title { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.8rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+    .filter-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .filter-chip { background: none; border: 1px solid var(--border); color: var(--mid); font-size: 0.72rem; letter-spacing: 0.06em; padding: 0.35rem 0.8rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: color 0.2s, border-color 0.2s, background 0.2s; }
+    .filter-chip:hover { color: var(--white); border-color: var(--white); }
+    .filter-chip.active { color: var(--orange); border-color: var(--orange); background: var(--orange-dim); }
+    .filter-panel-foot { padding: 1rem 1.6rem; border-top: 1px solid var(--border); display: flex; gap: 0.6rem; flex-shrink: 0; }
+    .filter-apply-btn { flex: 1; background: var(--orange); color: #111; border: none; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.75rem; cursor: pointer; transition: opacity 0.3s; }
+    .filter-apply-btn:hover { opacity: 0.87; }
+    .filter-reset-btn { background: none; border: 1px solid var(--border); color: var(--mid); font-family: 'DM Sans', sans-serif; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.75rem 1rem; cursor: pointer; transition: color 0.3s, border-color 0.3s; }
+    .filter-reset-btn:hover { color: var(--orange); border-color: var(--orange); }
+
+    /* COUNTERS + LEGEND */
+    .map-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.8rem; margin-bottom: 0.8rem; }
+    .map-legend { display: flex; gap: 1.2rem; align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 0.45rem; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mid); }
+    .legend-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+    .legend-dot.visited  { background: #4caf82; box-shadow: 0 0 5px rgba(76,175,130,0.5); }
+    .legend-dot.wishlist { background: #e8621a; box-shadow: 0 0 5px rgba(232,98,26,0.5); }
+    .map-counter { font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); }
+    .map-counter span { color: var(--orange); }
+
+    /* ACTIVE FILTERS STRIP */
+    #active-filter-strip { display: none; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.8rem; }
+    #active-filter-strip.show { display: flex; }
+    .active-chip { background: var(--orange-dim); border: 1px solid rgba(232,98,26,0.4); color: var(--orange); font-size: 0.65rem; letter-spacing: 0.06em; padding: 0.2rem 0.6rem; display: flex; align-items: center; gap: 0.4rem; }
+    .active-chip button { background: none; border: none; color: var(--orange); cursor: pointer; font-size: 0.75rem; padding: 0; line-height: 1; }
+
+    /* ACTIONS ROW */
+    .map-actions { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .dice-btn { display: inline-flex; align-items: center; gap: 0.6rem; background: var(--orange); color: #111; border: none; font-family: 'DM Sans', sans-serif; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.65rem 1.2rem; cursor: pointer; transition: opacity 0.3s; }
+    .dice-btn:hover { opacity: 0.88; }
+    .dice-emoji { font-size: 1rem; }
+    .action-btn { background: none; border: 1px solid var(--border); color: var(--mid); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.5rem 0.9rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: color 0.3s, border-color 0.3s; display: inline-flex; align-items: center; gap: 0.4rem; }
+    .action-btn:hover { color: var(--orange); border-color: var(--orange); }
+
+    /* DICE RESULT */
+    #diceResult { display: none; margin-bottom: 1rem; border: 1px solid var(--orange); background: var(--orange-dim); padding: 1.2rem 1.5rem; }
+    #diceResult.show { display: block; }
+    .dice-result-label { font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.4rem; }
+    .dice-result-name { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; color: var(--white); margin-bottom: 0.2rem; }
+    .dice-result-meta { font-size: 0.7rem; letter-spacing: 0.06em; color: var(--mid); margin-bottom: 0.5rem; }
+    .dice-result-note { font-size: 0.8rem; color: var(--light); line-height: 1.6; }
+    .dice-goto { display: inline-block; margin-top: 0.6rem; font-size: 0.67rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--orange); border: 1px solid rgba(232,98,26,0.4); padding: 0.28rem 0.7rem; cursor: pointer; background: none; font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
+    .dice-goto:hover { background: var(--orange); color: #111; }
+
+    /* MAP */
+    #map { width: 100%; height: 560px; border: 1px solid var(--border); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes roll { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
+
+    /* MAP POPUPS */
+    .leaflet-popup-content-wrapper { background: #211f18 !important; border: 1px solid #33301f !important; border-radius: 0 !important; box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important; color: #c8bfaa !important; }
+    .leaflet-popup-tip { background: #211f18 !important; }
+    .leaflet-popup-close-button { color: #7a7060 !important; font-size: 1.1rem !important; top: 8px !important; right: 10px !important; }
+    .leaflet-popup-close-button:hover { color: #e8621a !important; }
+    .map-popup-name { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: #f0ece3; margin-bottom: 0.2rem; }
+    .map-popup-meta { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: #7a7060; margin-bottom: 0.55rem; }
+    .map-popup-stars { font-size: 0.82rem; margin-bottom: 0.45rem; }
+    .map-popup-note { font-size: 0.8rem; color: #c8bfaa; line-height: 1.6; }
+    .map-popup-badge { display: inline-block; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.2rem 0.55rem; margin-bottom: 0.6rem; }
+    .map-popup-badge.visited  { background: rgba(76,175,130,0.15); color: #4caf82; border: 1px solid rgba(76,175,130,0.35); }
+    .map-popup-badge.wishlist { background: rgba(232,98,26,0.12); color: #e8621a; border: 1px solid rgba(232,98,26,0.35); }
+
+    /* CONTRIBUTE PANEL */
+    #contrib-panel { display: none; margin-top: 1rem; border: 1px solid var(--border); background: var(--card); padding: 1.5rem; }
+    #contrib-panel.open { display: block; }
+    .contrib-field { margin-bottom: 0.8rem; }
+    .contrib-field label { display: block; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid); margin-bottom: 0.35rem; }
+    .contrib-field input, .contrib-field textarea, .contrib-field select { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.82rem; padding: 0.55rem 0.8rem; outline: none; transition: border-color 0.3s; }
+    .contrib-field input:focus, .contrib-field textarea:focus, .contrib-field select:focus { border-color: var(--orange); }
+    .contrib-field textarea { resize: vertical; min-height: 70px; }
+    .contrib-field select option { background: var(--card); }
+    .contrib-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+    .contrib-submit { background: var(--orange); color: #111; border: none; font-family: 'DM Sans', sans-serif; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.65rem 1.4rem; cursor: pointer; transition: opacity 0.3s; }
+    .contrib-submit:hover { opacity: 0.85; }
+    #contrib-success { display: none; color: var(--green); font-size: 0.82rem; margin-top: 0.6rem; }
+    #contrib-key-status { font-size: 0.78rem; margin-top: 0.3rem; }
+
+    /* FOOTER */
+    footer { text-align: center; padding: 1.8rem 2rem; font-size: 0.7rem; letter-spacing: 0.08em; color: var(--mid); border-top: 1px solid var(--border); margin-top: 3rem; }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .map-page { padding: 1rem; }
+      nav { padding: 0.8rem 1rem; }
+      #filter-panel { width: 100%; max-width: 100vw; }
+      .contrib-grid { grid-template-columns: 1fr; }
+      #map { height: 400px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     AUTH SCREEN
+═══════════════════════════════════════════ -->
+<div id="auth-screen">
+  <div class="auth-back"><a href="index.html">← Back to Portfolio</a></div>
+  <div class="auth-logo">R<span>.</span>K</div>
+  <div class="auth-tagline">Food Map — Halal London</div>
+
+  <div class="auth-box">
+    <div class="auth-tabs">
+      <button class="auth-tab-btn active" id="tab-login-btn" onclick="switchToLogin()">Sign In</button>
+      <button class="auth-tab-btn" id="tab-signup-btn" onclick="switchToSignup()">Create Account</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="auth-view active" id="auth-login-view">
+      <div class="auth-field">
+        <label>Email Address</label>
+        <input type="email" id="auth-email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')doLogin()"/>
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="auth-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+      </div>
+      <button class="auth-btn" id="auth-login-btn" onclick="doLogin()">Sign In →</button>
+      <div class="auth-error" id="auth-error"></div>
+    </div>
+
+    <!-- SIGN UP -->
+    <div class="auth-view" id="auth-signup-view">
+      <div class="auth-field">
+        <label>Email Address</label>
+        <input type="email" id="auth-signup-email" placeholder="you@example.com"/>
+      </div>
+      <div class="auth-field">
+        <label>Password (min. 6 characters)</label>
+        <input type="password" id="auth-signup-password" placeholder="Choose a password" onkeydown="if(event.key==='Enter')doSignup()"/>
+      </div>
+      <div class="auth-field">
+        <label>Confirm Password</label>
+        <input type="password" id="auth-signup-password2" placeholder="Repeat your password" onkeydown="if(event.key==='Enter')doSignup()"/>
+      </div>
+      <button class="auth-btn" id="auth-signup-btn" onclick="doSignup()">Create Account →</button>
+      <div class="auth-error" id="auth-signup-error"></div>
+    </div>
+
+    <!-- VERIFY EMAIL -->
+    <div class="auth-view" id="auth-verify-view">
+      <div class="auth-verify-icon">📬</div>
+      <div class="auth-verify-title">Check your email</div>
+      <div class="auth-verify-text">We've sent a verification link to:</div>
+      <div class="auth-verify-email" id="auth-verify-email-shown"></div>
+      <div class="auth-verify-text" style="margin-bottom:1.5rem">Click the link in that email to verify, then come back here and sign in.</div>
+      <button class="auth-resend-btn" id="auth-resend-btn" onclick="resendVerifyEmail()">Resend Email</button>
+      <br>
+      <span class="auth-back-link" onclick="switchToLogin()">← Back to sign in</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SITE (shown after login)
+═══════════════════════════════════════════ -->
+<div id="site-wrapper">
+
+  <nav>
+    <a href="index.html" class="nav-back">← Portfolio</a>
+    <a href="foodmap.html" class="nav-logo">R<span>.</span>K Food Map</a>
+    <div class="nav-right">
+      <button class="nav-btn" id="theme-toggle-btn" onclick="toggleFoodMapTheme()" title="Toggle light/dark mode">☀ Light</button>
+      <button class="nav-btn" onclick="doLogout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <div class="map-page">
+    <div class="page-header">
+      <p class="page-label">Riaz's London</p>
+      <h1 class="page-title">Halal Food Map</h1>
+      <p class="page-desc">Every spot is halal. <span style="color:#4caf82">Green</span> = visited · <span style="color:#e8621a">Orange</span> = on the wishlist.</p>
+    </div>
+
+    <!-- SEARCH + FILTER -->
+    <div class="search-filter-row">
+      <div class="search-wrap">
+        <input id="mapSearch" type="text" placeholder="Search spots, cuisines, areas…"
+               oninput="onSearchInput()" onkeydown="onSearchKeydown(event)" autocomplete="off"/>
+        <div id="autocomplete-list"></div>
+      </div>
+      <button id="filter-btn" onclick="openFilterPanel()">
+        ⚙ Filters <span id="filter-count"></span>
+      </button>
+    </div>
+
+    <!-- ACTIVE FILTER CHIPS -->
+    <div id="active-filter-strip"></div>
+
+    <!-- COUNTS + LEGEND -->
+    <div class="map-controls">
+      <div class="map-legend">
+        <div class="legend-item"><div class="legend-dot visited"></div>Visited</div>
+        <div class="legend-item"><div class="legend-dot wishlist"></div>Wishlist</div>
+      </div>
+      <div class="map-counter">
+        <span id="visitedCount">0</span> visited &nbsp;·&nbsp;
+        <span id="wishlistCount">0</span> wishlist &nbsp;·&nbsp;
+        <span id="shownCount">0</span> showing
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="map-actions">
+      <button class="dice-btn" onclick="rollDice(this)">
+        <span class="dice-emoji">🎲</span> Pick a Random Spot
+      </button>
+      <button class="action-btn" onclick="locateMe()" id="locate-me-btn">📍 My Location</button>
+      <button class="action-btn" onclick="toggleContrib()">＋ Suggest a Spot</button>
+    </div>
+
+    <!-- DICE RESULT -->
+    <div id="diceResult">
+      <div class="dice-result-label">🎲 Tonight's Pick</div>
+      <div class="dice-result-name" id="diceResultName"></div>
+      <div class="dice-result-meta" id="diceResultMeta"></div>
+      <div class="dice-result-note" id="diceResultNote"></div>
+      <button class="dice-goto" onclick="focusDiceSpot()">📍 Show on Map</button>
+    </div>
+
+    <!-- SUGGEST A SPOT -->
+    <div id="contrib-panel">
+      <p style="font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--orange);margin-bottom:0.8rem;">Suggest a Spot</p>
+      <p style="font-size:0.8rem;color:var(--mid);margin-bottom:1rem;">Anyone can suggest — Riaz reviews all suggestions before they go live. Got a key? Enter it below to skip the queue.</p>
+      <div style="margin-bottom:0.8rem;">
+        <div class="contrib-field">
+          <label>Contributor Key (optional)</label>
+          <input type="password" id="contribKey" placeholder="Enter key if you have one…" oninput="checkContribKey()"/>
+        </div>
+        <p id="contrib-key-status"></p>
+      </div>
+      <div id="contrib-form">
+        <div class="contrib-grid">
+          <div class="contrib-field"><label>Place Name *</label><input type="text" id="cf-name" placeholder="e.g. Nando's Stratford"/></div>
+          <div class="contrib-field"><label>Full Address *</label><input type="text" id="cf-area" placeholder="e.g. 45 The Mall, Stratford E15"/></div>
+        </div>
+        <div class="contrib-grid">
+          <div class="contrib-field">
+            <label>Area of London</label>
+            <select id="cf-area-zone">
+              <option value="east">East London</option>
+              <option value="north">North London</option>
+              <option value="west">West London</option>
+              <option value="central">Central London</option>
+              <option value="south">South London</option>
+            </select>
+          </div>
+          <div class="contrib-field">
+            <label>Category</label>
+            <select id="cf-cat">
+              <option value="food">🍔 Food</option>
+              <option value="dessert">🍰 Dessert</option>
+              <option value="cafe">☕ Cafe</option>
+            </select>
+          </div>
+          <div class="contrib-field">
+            <label>Cuisine</label>
+            <select id="cf-cuisine">
+              <option value="american">American / Burgers</option>
+              <option value="asian">Asian</option>
+              <option value="panasian">Pan Asian</option>
+              <option value="italian">Italian / Pizza</option>
+              <option value="middleeastern">Middle Eastern</option>
+              <option value="middleeasterndesserts">Middle Eastern Desserts</option>
+              <option value="turkish">Turkish</option>
+              <option value="indian">Indian / South Asian</option>
+              <option value="chicken">Fried Chicken</option>
+              <option value="somali">Somali / East African</option>
+              <option value="korean">Korean</option>
+              <option value="mexican">Mexican</option>
+              <option value="filipino">Filipino / SE Asian</option>
+              <option value="jamaican">Jamaican</option>
+              <option value="afrocaribbean">Afro-Caribbean</option>
+              <option value="mediterranean">Mediterranean</option>
+              <option value="chinese">Chinese</option>
+              <option value="bbqgrill">BBQ / Grill</option>
+              <option value="bakery">Bakery / Bakes</option>
+              <option value="desserts">Sweets / Desserts</option>
+              <option value="mixed">Mixed / Other</option>
+            </select>
+          </div>
+          <div class="contrib-field">
+            <label>Confirmed Halal?</label>
+            <select id="cf-halal">
+              <option value="yes">Yes — confirmed halal</option>
+              <option value="assumed">Assumed (Muslim-owned / no pork)</option>
+              <option value="unsure">Not sure — Riaz to check</option>
+            </select>
+          </div>
+        </div>
+        <div class="contrib-field"><label>Your name (optional)</label><input type="text" id="cf-suggester" placeholder="e.g. Sarah, or leave blank"/></div>
+        <div class="contrib-field"><label>Your note / why you're recommending it</label><textarea id="cf-note" placeholder="What's good here? Any must-orders?"></textarea></div>
+        <div id="contrib-geo-status" style="font-size:0.75rem;color:var(--mid);margin-bottom:0.6rem;min-height:1.3em;"></div>
+        <button class="contrib-submit" onclick="submitContrib()">Submit Suggestion →</button>
+        <div id="contrib-success"></div>
+      </div>
+    </div>
+
+    <!-- MAP -->
+    <div id="map" style="position:relative;margin-top:1rem;">
+      <div id="map-loading" style="display:none;position:absolute;inset:0;background:rgba(19,18,16,0.85);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:0.8rem;">
+        <div style="width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--orange);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+        <span style="font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);">Loading spots…</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>© 2026 Riaz Khan &nbsp;·&nbsp; All spots are halal &nbsp;·&nbsp; <a href="index.html" style="color:var(--mid);text-decoration:none;">← Back to Portfolio</a></footer>
+</div>
+
+<!-- FILTER BACKDROP + PANEL -->
+<div id="filter-backdrop" onclick="closeFilterPanel()"></div>
+<div id="filter-panel">
+  <div class="filter-panel-head">
+    <div class="filter-panel-title">Filters</div>
+    <button class="filter-panel-close" onclick="closeFilterPanel()">✕</button>
+  </div>
+  <div class="filter-panel-body">
+
+    <div class="filter-section">
+      <div class="filter-section-title">Status</div>
+      <div class="filter-chips">
+        <button class="filter-chip active" data-filter="status" data-val="all">All</button>
+        <button class="filter-chip" data-filter="status" data-val="visited">✓ Visited</button>
+        <button class="filter-chip" data-filter="status" data-val="wishlist">♡ Wishlist</button>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-section-title">Category</div>
+      <div class="filter-chips">
+        <button class="filter-chip active" data-filter="cat" data-val="all">All</button>
+        <button class="filter-chip" data-filter="cat" data-val="food">🍔 Food</button>
+        <button class="filter-chip" data-filter="cat" data-val="dessert">🍰 Dessert</button>
+        <button class="filter-chip" data-filter="cat" data-val="cafe">☕ Cafe</button>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-section-title">Cuisine</div>
+      <div class="filter-chips">
+        <button class="filter-chip active" data-filter="cuisine" data-val="all">All</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="american">🍔 Burgers / American</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="chicken">🍗 Fried Chicken</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="italian">🍕 Italian / Pizza</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="indian">🍛 Indian / South Asian</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="middleeastern">🥙 Middle Eastern</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="turkish">🥗 Turkish</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="asian">🍜 Asian</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="panasian">🥢 Pan Asian</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="korean">🫕 Korean</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="somali">🌍 Somali / East African</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="mexican">🌮 Mexican</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="filipino">🇵🇭 Filipino / SE Asian</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="bbqgrill">🔥 BBQ / Grill</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="bakery">🥐 Bakery / Bakes</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="jamaican">🇯🇲 Jamaican</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="afrocaribbean">🌍 Afro-Caribbean</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="mediterranean">🫒 Mediterranean</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="chinese">🥟 Chinese</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="middleeasterndesserts">🍯 Middle Eastern Desserts</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="desserts">🍮 Sweets / Desserts</button>
+        <button class="filter-chip" data-filter="cuisine" data-val="mixed">Mixed / Other</button>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-section-title">Area</div>
+      <div class="filter-chips">
+        <button class="filter-chip active" data-filter="area" data-val="all">All London</button>
+        <button class="filter-chip" data-filter="area" data-val="east">East London</button>
+        <button class="filter-chip" data-filter="area" data-val="north">North London</button>
+        <button class="filter-chip" data-filter="area" data-val="west">West London</button>
+        <button class="filter-chip" data-filter="area" data-val="central">Central London</button>
+        <button class="filter-chip" data-filter="area" data-val="south">South London</button>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-section-title">Rating (visited spots only)</div>
+      <div class="filter-chips">
+        <button class="filter-chip active" data-filter="rating" data-val="all">Any Rating</button>
+        <button class="filter-chip" data-filter="rating" data-val="5">⭐⭐⭐⭐⭐ 5/5 only</button>
+        <button class="filter-chip" data-filter="rating" data-val="4">⭐⭐⭐⭐ 4+ stars</button>
+        <button class="filter-chip" data-filter="rating" data-val="3">⭐⭐⭐ 3+ stars</button>
+      </div>
+    </div>
+
+  </div>
+  <div class="filter-panel-foot">
+    <button class="filter-reset-btn" onclick="resetFilters()">Reset All</button>
+    <button class="filter-apply-btn" onclick="applyAndClose()">Apply Filters →</button>
+  </div>
+</div>
+
+<script>
+  // ════════════════════════════════════════
+  // SUPABASE + CONFIG
+  // ════════════════════════════════════════
+  var SUPABASE_URL      = 'https://vhymwetqywpzhtlvpqsd.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoeW13ZXRxeXdwemh0bHZwcXNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2OTA2NjgsImV4cCI6MjA4NzI2NjY2OH0.nffaclYk7fOlNht0dTe9qEGJy3ec9VcnPfrImtvwjWk';
+  var CONTRIB_KEYS      = ['ALBINO', 'MUM'];
+  var db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // ════════════════════════════════════════
+  // AUTH
+  // ════════════════════════════════════════
+  var mapInitialised = false;
+
+  function showSite(userEmail) {
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('site-wrapper').style.display = 'block';
+    var emailEl = document.getElementById('nav-user-email');
+    if (emailEl && userEmail) emailEl.textContent = userEmail;
+    if (!mapInitialised) { mapInitialised = true; initMap(); }
+  }
+
+  function showVerifyScreen(email) {
+    ['auth-login-view','auth-signup-view'].forEach(function(id){ document.getElementById(id).classList.remove('active'); });
+    document.getElementById('auth-verify-view').classList.add('active');
+    ['tab-login-btn','tab-signup-btn'].forEach(function(id){ document.getElementById(id).classList.remove('active'); });
+    document.getElementById('auth-verify-email-shown').textContent = email || '';
+    document.getElementById('auth-screen').style.display = 'flex';
+  }
+
+  function switchToLogin() {
+    document.getElementById('auth-signup-view').classList.remove('active');
+    document.getElementById('auth-verify-view').classList.remove('active');
+    document.getElementById('auth-login-view').classList.add('active');
+    document.getElementById('tab-signup-btn').classList.remove('active');
+    document.getElementById('tab-login-btn').classList.add('active');
+    document.getElementById('auth-signup-error').textContent = '';
+  }
+
+  function switchToSignup() {
+    document.getElementById('auth-login-view').classList.remove('active');
+    document.getElementById('auth-verify-view').classList.remove('active');
+    document.getElementById('auth-signup-view').classList.add('active');
+    document.getElementById('tab-login-btn').classList.remove('active');
+    document.getElementById('tab-signup-btn').classList.add('active');
+    document.getElementById('auth-error').textContent = '';
+  }
+
+  async function doLogin() {
+    var email = (document.getElementById('auth-email').value || '').trim();
+    var pass  = document.getElementById('auth-password').value;
+    var errEl = document.getElementById('auth-error');
+    errEl.textContent = '';
+    if (!email || !pass) { errEl.textContent = 'Please enter your email and password.'; return; }
+    var btn = document.getElementById('auth-login-btn');
+    btn.disabled = true; btn.textContent = 'Signing in…';
+    var result = await db.auth.signInWithPassword({ email: email, password: pass });
+    btn.disabled = false; btn.textContent = 'Sign In →';
+    if (result.error) { errEl.textContent = result.error.message; return; }
+    var user = result.data.user;
+    if (!user.email_confirmed_at) { showVerifyScreen(email); return; }
+    showSite(user.email);
+  }
+
+  async function doSignup() {
+    var email  = (document.getElementById('auth-signup-email').value || '').trim();
+    var pass   = document.getElementById('auth-signup-password').value;
+    var pass2  = document.getElementById('auth-signup-password2').value;
+    var errEl  = document.getElementById('auth-signup-error');
+    errEl.textContent = '';
+    if (!email || !pass || !pass2) { errEl.textContent = 'Please fill in all fields.'; return; }
+    if (pass !== pass2) { errEl.textContent = "Passwords don't match."; return; }
+    if (pass.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; return; }
+    var btn = document.getElementById('auth-signup-btn');
+    btn.disabled = true; btn.textContent = 'Creating account…';
+    var result = await db.auth.signUp({ email: email, password: pass });
+    btn.disabled = false; btn.textContent = 'Create Account →';
+    if (result.error) { errEl.textContent = result.error.message; return; }
+    showVerifyScreen(email);
+  }
+
+  async function doLogout() { await db.auth.signOut(); location.reload(); }
+
+  // ════════════════════════════════════════
+  // THEME TOGGLE (Light / Dark)
+  // ════════════════════════════════════════
+  (function() {
+    var saved = localStorage.getItem('foodmap-theme');
+    if (saved === 'light') {
+      document.body.classList.add('light-mode');
+      var btn = document.getElementById('theme-toggle-btn');
+      if (btn) btn.textContent = '☾ Dark';
+    }
+  })();
+
+  function toggleFoodMapTheme() {
+    var isLight = document.body.classList.toggle('light-mode');
+    var btn = document.getElementById('theme-toggle-btn');
+    btn.textContent = isLight ? '☾ Dark' : '☀ Light';
+    localStorage.setItem('foodmap-theme', isLight ? 'light' : 'dark');
+
+    // Swap map tiles
+    if (foodMap && window._darkTiles && window._lightTiles) {
+      if (isLight) {
+        foodMap.removeLayer(window._darkTiles);
+        window._lightTiles.addTo(foodMap);
+      } else {
+        foodMap.removeLayer(window._lightTiles);
+        window._darkTiles.addTo(foodMap);
+      }
+    }
+  }
+
+  async function resendVerifyEmail() {
+    var email = document.getElementById('auth-verify-email-shown').textContent;
+    if (!email) return;
+    var btn = document.getElementById('auth-resend-btn');
+    btn.disabled = true; btn.textContent = 'Sent ✓';
+    await db.auth.resend({ type: 'signup', email: email });
+    setTimeout(function(){ btn.disabled = false; btn.textContent = 'Resend Email'; }, 5000);
+  }
+
+  // Session check on load
+  db.auth.getSession().then(function(result) {
+    var session = result.data.session;
+    if (session && session.user && session.user.email_confirmed_at) {
+      showSite(session.user.email);
+    } else if (session && session.user && !session.user.email_confirmed_at) {
+      showVerifyScreen(session.user.email);
+    } else {
+      document.getElementById('auth-screen').style.display = 'flex';
+    }
+  });
+
+  db.auth.onAuthStateChange(function(event, session) {
+    if ((event === 'SIGNED_IN' || event === 'USER_UPDATED') && session && session.user && session.user.email_confirmed_at) {
+      showSite(session.user.email);
+    }
+  });
+
+  // ════════════════════════════════════════
+  // MAP STATE
+  // ════════════════════════════════════════
+  var allSpots = [];
+  var mapMarkers = [];
+  var activeFilters = { status: 'all', cat: 'all', cuisine: 'all', area: 'all', rating: 'all' };
+  var searchQuery = '';
+  var lastDiceSpot = null;
+  var foodMap;
+  var acHighlight = -1;
+
+  // ════════════════════════════════════════
+  // MAP INIT
+  // ════════════════════════════════════════
+  function initMap() {
+    foodMap = L.map('map', { center: [51.510, -0.09], zoom: 11 });
+
+    window._darkTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+      subdomains: 'abcd', maxZoom: 19
+    });
+    window._lightTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+      subdomains: 'abcd', maxZoom: 19
+    });
+
+    var isLight = document.body.classList.contains('light-mode');
+    (isLight ? window._lightTiles : window._darkTiles).addTo(foodMap);
+
+    loadSpots();
+    document.getElementById('map').addEventListener('click', closeAutocomplete);
+  }
+
+  // ════════════════════════════════════════
+  // LOAD SPOTS
+  // ════════════════════════════════════════
+  async function loadSpots() {
+    var loadEl = document.getElementById('map-loading');
+    if (loadEl) loadEl.style.display = 'flex';
+    var result = await db.from('food_spots').select('*').eq('approved', true).order('name');
+    if (loadEl) loadEl.style.display = 'none';
+    if (result.error) { console.error(result.error.message); return; }
+    allSpots   = result.data || [];
+    mapMarkers = [];
+    allSpots.forEach(function(s) { addMarker(s); });
+    updateCounts();
+    filterMap();
+    // Live updates
+    db.channel('live_spots')
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'food_spots' }, function(payload) {
+        var s = payload.new;
+        if (!s.approved) return;
+        if (!allSpots.some(function(x){ return x.id === s.id; })) {
+          allSpots.push(s); addMarker(s); updateCounts(); filterMap();
+        }
+      }).subscribe();
+  }
+
+  // ════════════════════════════════════════
+  // MARKER + POPUP
+  // ════════════════════════════════════════
+  function makeIcon(status) {
+    var color = status === 'visited' ? '#4caf82' : '#e8621a';
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="38" viewBox="0 0 28 38">'
+      + '<path d="M14 0C6.27 0 0 6.27 0 14c0 9.625 14 24 14 24S28 23.625 28 14C28 6.27 21.73 0 14 0z" fill="'+color+'"/>'
+      + '<circle cx="14" cy="14" r="5.5" fill="white" opacity="0.9"/></svg>';
+    return L.divIcon({ html: svg, className: '', iconSize: [28,38], iconAnchor: [14,38], popupAnchor: [0,-40] });
+  }
+
+  function starsHtml(r) {
+    if (r == null) return '';
+    var s = '';
+    for (var i = 1; i <= 5; i++) s += r >= i ? '⭐' : (r >= i-0.5 ? '✨' : '☆');
+    return s;
+  }
+
+  function buildPopup(spot) {
+    var badge = spot.cat === 'dessert' ? '🍰' : spot.cat === 'cafe' ? '☕' : '🍔';
+    var ratingHtml = spot.rating != null
+      ? '<div class="map-popup-stars">' + starsHtml(spot.rating) + ' ' + spot.rating + '/5</div>'
+      : '<div style="font-size:0.7rem;color:#e8621a;margin-bottom:0.5rem">Not visited yet</div>';
+    return '<div style="min-width:200px;padding:4px 2px">'
+      + '<div class="map-popup-badge ' + spot.status + '">' + (spot.status==='visited' ? '✓ Visited' : '♡ Wishlist') + '</div>'
+      + '<div class="map-popup-name">' + badge + ' ' + (spot.name||'') + '</div>'
+      + '<div class="map-popup-meta">' + (spot.cuisine||'') + ' &middot; ' + (spot.area||'') + '</div>'
+      + ratingHtml
+      + '<div class="map-popup-note">' + (spot.note||'') + '</div>'
+      + '</div>';
+  }
+
+  function addMarker(spot) {
+    var m = L.marker([spot.lat, spot.lng], { icon: makeIcon(spot.status) });
+    m.bindPopup(buildPopup(spot), { maxWidth: 290 });
+    m._spot = spot;
+    mapMarkers.push(m);
+  }
+
+  function updateCounts() {
+    document.getElementById('visitedCount').textContent  = allSpots.filter(function(s){ return s.status==='visited'; }).length;
+    document.getElementById('wishlistCount').textContent = allSpots.filter(function(s){ return s.status==='wishlist'; }).length;
+  }
+
+  // ════════════════════════════════════════
+  // FILTER LOGIC
+  // ════════════════════════════════════════
+  function spotMatchesFilters(spot) {
+    if (activeFilters.status  !== 'all' && spot.status    !== activeFilters.status)   return false;
+    if (activeFilters.cat     !== 'all' && spot.cat       !== activeFilters.cat)      return false;
+    if (activeFilters.cuisine !== 'all' && spot.cuisine   !== activeFilters.cuisine)  return false;
+    if (activeFilters.area    !== 'all' && spot.area_zone !== activeFilters.area)     return false;
+    if (activeFilters.rating  !== 'all') {
+      var minR = parseFloat(activeFilters.rating);
+      if (spot.rating == null || spot.rating < minR) return false;
+    }
+    if (searchQuery) {
+      var q = searchQuery.toLowerCase();
+      if ((spot.name||'').toLowerCase().indexOf(q) === -1 &&
+          (spot.area||'').toLowerCase().indexOf(q) === -1 &&
+          (spot.cuisine||'').toLowerCase().indexOf(q) === -1 &&
+          (spot.note||'').toLowerCase().indexOf(q) === -1) return false;
+    }
+    return true;
+  }
+
+  function filterMap() {
+    searchQuery = (document.getElementById('mapSearch')||{}).value || '';
+    var shown = 0;
+    mapMarkers.forEach(function(m) {
+      if (spotMatchesFilters(m._spot)) {
+        if (!foodMap.hasLayer(m)) m.addTo(foodMap);
+        shown++;
+      } else {
+        if (foodMap.hasLayer(m)) foodMap.removeLayer(m);
+      }
+    });
+    document.getElementById('shownCount').textContent = shown;
+  }
+
+  // ════════════════════════════════════════
+  // FILTER PANEL
+  // ════════════════════════════════════════
+  var pendingFilters = { status: 'all', cat: 'all', cuisine: 'all', area: 'all', rating: 'all' };
+
+  function openFilterPanel() {
+    // Sync pending filters UI to active
+    pendingFilters = Object.assign({}, activeFilters);
+    document.querySelectorAll('.filter-chip').forEach(function(chip) {
+      var f = chip.getAttribute('data-filter');
+      var v = chip.getAttribute('data-val');
+      chip.classList.toggle('active', pendingFilters[f] === v);
+    });
+    document.getElementById('filter-backdrop').classList.add('open');
+    document.getElementById('filter-panel').classList.add('open');
+    document.getElementById('filter-btn').classList.add('active');
+  }
+
+  function closeFilterPanel() {
+    document.getElementById('filter-backdrop').classList.remove('open');
+    document.getElementById('filter-panel').classList.remove('open');
+    document.getElementById('filter-btn').classList.remove('active');
+  }
+
+  function applyAndClose() {
+    activeFilters = Object.assign({}, pendingFilters);
+    filterMap();
+    updateFilterCount();
+    updateActiveStrip();
+    closeFilterPanel();
+  }
+
+  function resetFilters() {
+    pendingFilters = { status: 'all', cat: 'all', cuisine: 'all', area: 'all', rating: 'all' };
+    document.querySelectorAll('.filter-chip').forEach(function(chip) {
+      chip.classList.toggle('active', chip.getAttribute('data-val') === 'all');
+    });
+  }
+
+  function updateFilterCount() {
+    var count = Object.values(activeFilters).filter(function(v){ return v !== 'all'; }).length;
+    var el = document.getElementById('filter-count');
+    el.textContent = count;
+    el.classList.toggle('show', count > 0);
+  }
+
+  var filterLabels = {
+    status:  { visited: 'Visited', wishlist: 'Wishlist' },
+    cat:     { food: 'Food', dessert: 'Dessert', cafe: 'Cafe' },
+    cuisine: { american: 'American', chicken: 'Chicken', italian: 'Italian', indian: 'Indian', middleeastern: 'Middle Eastern', turkish: 'Turkish', asian: 'Asian', panasian: 'Pan Asian', korean: 'Korean', somali: 'Somali', mexican: 'Mexican', filipino: 'Filipino / SE Asian', bbqgrill: 'BBQ / Grill', bakery: 'Bakery / Bakes', jamaican: 'Jamaican', afrocaribbean: 'Afro-Caribbean', mediterranean: 'Mediterranean', chinese: 'Chinese', middleeasterndesserts: 'Middle Eastern Desserts', desserts: 'Sweets', mixed: 'Mixed' },
+    area:    { east: 'East London', north: 'North London', west: 'West London', central: 'Central London', south: 'South London' },
+    rating:  { '5': '5★ only', '4': '4★+', '3': '3★+' }
+  };
+
+  function updateActiveStrip() {
+    var strip = document.getElementById('active-filter-strip');
+    var chips = '';
+    Object.keys(activeFilters).forEach(function(key) {
+      var val = activeFilters[key];
+      if (val === 'all') return;
+      var label = (filterLabels[key] && filterLabels[key][val]) ? filterLabels[key][val] : val;
+      chips += '<div class="active-chip">' + label + '<button onclick="clearFilter(\'' + key + '\')" title="Remove">✕</button></div>';
+    });
+    strip.innerHTML = chips;
+    strip.classList.toggle('show', chips.length > 0);
+  }
+
+  function clearFilter(key) {
+    activeFilters[key] = 'all';
+    pendingFilters[key] = 'all';
+    filterMap();
+    updateFilterCount();
+    updateActiveStrip();
+  }
+
+  // Wire filter chips inside panel
+  document.querySelectorAll('.filter-chip').forEach(function(chip) {
+    chip.addEventListener('click', function() {
+      var f = chip.getAttribute('data-filter');
+      var v = chip.getAttribute('data-val');
+      // Deselect siblings in same group
+      document.querySelectorAll('.filter-chip[data-filter="' + f + '"]').forEach(function(c){ c.classList.remove('active'); });
+      chip.classList.add('active');
+      pendingFilters[f] = v;
+    });
+  });
+
+  // ════════════════════════════════════════
+  // SEARCH AUTOCOMPLETE
+  // ════════════════════════════════════════
+  function onSearchInput() {
+    var q = (document.getElementById('mapSearch').value || '').trim().toLowerCase();
+    filterMap();
+    if (q.length < 2) { closeAutocomplete(); return; }
+
+    var suggestions = [];
+    var seen = { name: {}, area: {}, cuisine: {} };
+
+    allSpots.forEach(function(s) {
+      // Name match
+      if ((s.name||'').toLowerCase().indexOf(q) !== -1 && !seen.name[s.name]) {
+        suggestions.push({ type: 'place', label: s.name, sub: s.area, spot: s });
+        seen.name[s.name] = true;
+      }
+      // Area match (display the full area string)
+      if ((s.area||'').toLowerCase().indexOf(q) !== -1 && !seen.area[s.area]) {
+        suggestions.push({ type: 'area', label: s.area });
+        seen.area[s.area] = true;
+      }
+      // Cuisine match
+      var cuisineLabel = s.cuisine ? s.cuisine.charAt(0).toUpperCase() + s.cuisine.slice(1) : '';
+      if ((s.cuisine||'').toLowerCase().indexOf(q) !== -1 && !seen.cuisine[s.cuisine]) {
+        suggestions.push({ type: 'cuisine', label: cuisineLabel + ' spots', value: s.cuisine });
+        seen.cuisine[s.cuisine] = true;
+      }
+    });
+
+    // Sort: names first, then areas, then cuisines
+    suggestions.sort(function(a,b){ var order = {place:0,area:1,cuisine:2}; return order[a.type]-order[b.type]; });
+    suggestions = suggestions.slice(0, 8);
+
+    if (!suggestions.length) { closeAutocomplete(); return; }
+
+    var list = document.getElementById('autocomplete-list');
+    list.innerHTML = suggestions.map(function(s, i) {
+      var typeLabel = s.type === 'place' ? 'Place' : s.type === 'area' ? 'Area' : 'Cuisine';
+      var icon = s.type === 'place' ? '📍' : s.type === 'area' ? '🗺' : '🍽';
+      var highlightedLabel = s.label.replace(new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi'), '<span class="ac-match">$1</span>');
+      return '<div class="autocomplete-item" data-index="' + i + '" data-type="' + s.type + '" data-label="' + encodeURIComponent(s.label) + '" data-value="' + encodeURIComponent(s.value || '') + '" onclick="selectSuggestion(this)">'
+        + icon + ' ' + highlightedLabel
+        + (s.sub ? '<span style="font-size:0.7rem;color:var(--mid);margin-left:0.4rem">' + s.sub + '</span>' : '')
+        + '<span class="ac-type">' + typeLabel + '</span>'
+        + '</div>';
+    }).join('');
+    list.classList.add('open');
+    acHighlight = -1;
+  }
+
+  function onSearchKeydown(e) {
+    var items = document.querySelectorAll('.autocomplete-item');
+    if (!items.length) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); acHighlight = Math.min(acHighlight+1, items.length-1); updateAcHighlight(items); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); acHighlight = Math.max(acHighlight-1, 0); updateAcHighlight(items); }
+    else if (e.key === 'Enter' && acHighlight >= 0) { e.preventDefault(); selectSuggestion(items[acHighlight]); }
+    else if (e.key === 'Escape') { closeAutocomplete(); }
+  }
+
+  function updateAcHighlight(items) {
+    items.forEach(function(el, i){ el.classList.toggle('highlighted', i === acHighlight); });
+  }
+
+  function selectSuggestion(el) {
+    var type  = el.getAttribute('data-type');
+    var label = decodeURIComponent(el.getAttribute('data-label'));
+    var val   = decodeURIComponent(el.getAttribute('data-value'));
+    var searchEl = document.getElementById('mapSearch');
+
+    if (type === 'place' || type === 'area') {
+      searchEl.value = label;
+    } else if (type === 'cuisine') {
+      // Apply as cuisine filter and clear search
+      activeFilters.cuisine = val;
+      pendingFilters.cuisine = val;
+      searchEl.value = '';
+      updateFilterCount();
+      updateActiveStrip();
+    }
+    closeAutocomplete();
+    filterMap();
+
+    // If it's a place, zoom to it
+    if (type === 'place') {
+      var spot = allSpots.find(function(s){ return s.name === label; });
+      if (spot) {
+        foodMap.setView([spot.lat, spot.lng], 16, { animate: true });
+        mapMarkers.forEach(function(m){ if (m._spot.id === spot.id) m.openPopup(); });
+      }
+    }
+  }
+
+  function closeAutocomplete() {
+    document.getElementById('autocomplete-list').classList.remove('open');
+    acHighlight = -1;
+  }
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.search-wrap')) closeAutocomplete();
+  });
+
+  // ════════════════════════════════════════
+  // DICE
+  // ════════════════════════════════════════
+  function rollDice(btn) {
+    var pool = allSpots.filter(function(s){ return s.status==='wishlist' && spotMatchesFilters(s); });
+    if (!pool.length) pool = allSpots.filter(function(s){ return s.status==='wishlist'; });
+    if (!pool.length) return;
+    var spot = pool[Math.floor(Math.random()*pool.length)];
+    lastDiceSpot = spot;
+    var emoji = btn.querySelector('.dice-emoji');
+    emoji.style.animation = 'none'; void emoji.offsetWidth; emoji.style.animation = 'roll 0.5s ease';
+    document.getElementById('diceResultName').textContent = spot.name;
+    document.getElementById('diceResultMeta').textContent = (spot.cuisine||'') + ' · ' + (spot.area||'');
+    document.getElementById('diceResultNote').textContent = spot.note || '';
+    var res = document.getElementById('diceResult');
+    res.classList.remove('show'); void res.offsetWidth; res.classList.add('show');
+  }
+
+  function focusDiceSpot() {
+    if (!lastDiceSpot) return;
+    foodMap.setView([lastDiceSpot.lat, lastDiceSpot.lng], 15, { animate: true });
+    mapMarkers.forEach(function(m){ if (m._spot.id===lastDiceSpot.id) m.openPopup(); });
+    document.getElementById('map').scrollIntoView({ behavior:'smooth', block:'center' });
+  }
+
+  // ════════════════════════════════════════
+  // LOCATION
+  // ════════════════════════════════════════
+  function locateMe() {
+    var btn = document.getElementById('locate-me-btn');
+    if (!navigator.geolocation) { alert("Your browser doesn't support location."); return; }
+    btn.textContent = '⏳ Finding you…';
+    btn.style.color = 'var(--orange)';
+    navigator.geolocation.getCurrentPosition(
+      function(pos) {
+        foodMap.setView([pos.coords.latitude, pos.coords.longitude], 15, { animate: true });
+        L.circleMarker([pos.coords.latitude, pos.coords.longitude], {
+          radius: 10, fillColor: '#4c9faf', color: '#fff', weight: 2, opacity: 1, fillOpacity: 0.85
+        }).addTo(foodMap).bindPopup('📍 You are here').openPopup();
+        btn.textContent = '📍 My Location';
+        btn.style.color = '';
+      },
+      function() {
+        btn.textContent = '📍 My Location';
+        btn.style.color = '';
+        alert("Couldn't get your location. Make sure you've allowed location access.");
+      }
+    );
+  }
+
+  // ════════════════════════════════════════
+  // CONTRIBUTE
+  // ════════════════════════════════════════
+  function toggleContrib() {
+    document.getElementById('contrib-panel').classList.toggle('open');
+  }
+
+  function checkContribKey() {
+    var val = (document.getElementById('contribKey').value || '').trim().toUpperCase();
+    var el = document.getElementById('contrib-key-status');
+    if (!val) { el.textContent = ''; return; }
+    if (CONTRIB_KEYS.map(function(k){ return k.toUpperCase(); }).indexOf(val) !== -1) {
+      el.textContent = '✓ Trusted contributor — goes straight to the map!';
+      el.style.color = 'var(--green)';
+    } else {
+      el.textContent = '✗ Key not recognised — will go to Riaz for review.';
+      el.style.color = 'var(--mid)';
+    }
+  }
+
+  async function geocodeAddress(address) {
+    var url = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(address + ', London, UK') + '&format=json&limit=1';
+    try {
+      var r = await fetch(url, { headers: { 'User-Agent': 'RiazFoodMap/1.0', 'Accept-Language': 'en' } });
+      var d = await r.json();
+      if (d.length > 0) return { lat: parseFloat(d[0].lat), lng: parseFloat(d[0].lon), display: d[0].display_name };
+    } catch(e) {}
+    return null;
+  }
+
+  async function submitContrib() {
+    var name      = (document.getElementById('cf-name').value || '').trim();
+    var address   = (document.getElementById('cf-area').value || '').trim();
+    var note      = (document.getElementById('cf-note').value || '').trim();
+    var suggester = (document.getElementById('cf-suggester').value || '').trim();
+    var keyVal    = (document.getElementById('contribKey').value || '').trim().toUpperCase();
+    var geoEl     = document.getElementById('contrib-geo-status');
+    var isTrusted = CONTRIB_KEYS.indexOf(keyVal) !== -1;
+
+    if (!name || !address) { geoEl.textContent = '⚠ Please fill in name and address.'; geoEl.style.color = '#e8621a'; return; }
+    geoEl.style.color = 'var(--mid)'; geoEl.textContent = '📍 Locating on map…';
+    var coords = await geocodeAddress(address);
+    if (!coords) { geoEl.textContent = "❌ Couldn't find that address. Try adding a postcode."; geoEl.style.color = '#e8621a'; return; }
+    geoEl.textContent = '✓ Found: ' + coords.display.split(',').slice(0,3).join(',');
+    geoEl.style.color = 'var(--green)';
+
+    var spot = {
+      name: name, area: address,
+      area_zone:    document.getElementById('cf-area-zone').value,
+      cat:          document.getElementById('cf-cat').value,
+      cuisine:      document.getElementById('cf-cuisine').value,
+      status:       'wishlist', rating: null, note: note,
+      lat: coords.lat, lng: coords.lng,
+      approved:     isTrusted,
+      suggested_by: isTrusted ? keyVal : (suggester || 'public')
+    };
+
+    var res = await db.from('food_spots').insert(spot);
+    if (res.error) { geoEl.textContent = '❌ Error: ' + res.error.message; geoEl.style.color = '#e8621a'; return; }
+
+    if (isTrusted) {
+      var newSpot = Object.assign({}, spot, { id: Date.now() + '' });
+      allSpots.push(newSpot); addMarker(newSpot); filterMap(); updateCounts();
+    }
+
+    var msg = document.getElementById('contrib-success');
+    msg.textContent = isTrusted ? '✓ Added straight to the map!' : '✓ Suggestion sent — Riaz will review it.';
+    msg.style.color = 'var(--green)'; msg.style.display = 'block';
+    ['cf-name','cf-area','cf-note','cf-suggester'].forEach(function(id){ document.getElementById(id).value = ''; });
+    geoEl.textContent = '';
+    setTimeout(function(){ msg.style.display = 'none'; }, 6000);
+  }
+</script>
+</body>
+</html>
