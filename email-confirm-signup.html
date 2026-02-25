@@ -1,0 +1,95 @@
+<!-- ============================================================
+  SUPABASE — WELCOME / CONFIRM SIGNUP EMAIL TEMPLATE
+  
+  Where to paste this:
+  Supabase Dashboard → Authentication → Email Templates
+  → Select "Confirm signup" template
+  → Replace the HTML with the code below
+  → Click Save
+
+  {{ .ConfirmationURL }} is a Supabase variable — leave it as-is.
+  ============================================================ -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Welcome to Tariq Khan</title>
+</head>
+<body style="margin:0;padding:0;background:#f5f1ea;font-family:'DM Sans',Arial,sans-serif;font-weight:300;color:#1a1814;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f1ea;padding:40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border:1px solid #d8d3c8;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:#131210;padding:28px 36px;">
+              <p style="margin:0;font-family:Georgia,serif;font-size:1.5rem;letter-spacing:0.12em;color:#f0ece3;">Tariq<span style="color:#e8621a;">.</span>Khan</p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:36px 36px 24px;">
+              <p style="margin:0 0 8px;font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;color:#e8621a;">Welcome</p>
+              <h1 style="margin:0 0 24px;font-family:Georgia,serif;font-size:1.8rem;font-weight:400;color:#1a1814;line-height:1.2;">Hello {{ .Email }}</h1>
+              <p style="margin:0 0 16px;font-size:0.95rem;line-height:1.8;color:#4a4540;">Thank you for signing up to <strong>Tariq Khan</strong>. We are delighted to have you.</p>
+              <p style="margin:0 0 28px;font-size:0.95rem;line-height:1.8;color:#4a4540;">Please confirm your email address to activate your account and get started.</p>
+
+              <!-- CTA Button -->
+              <table cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+                <tr>
+                  <td style="background:#e8621a;">
+                    <a href="{{ .ConfirmationURL }}"
+                       style="display:inline-block;padding:14px 28px;font-size:0.8rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#111111;text-decoration:none;">
+                      Confirm Account →
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0 0 8px;font-size:0.95rem;line-height:1.8;color:#4a4540;">Once confirmed, visit your dashboard to explore the halal food map and all features:</p>
+
+              <!-- Dashboard Button -->
+              <table cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+                <tr>
+                  <td style="background:#131210;border:1px solid #33301f;">
+                    <a href="https://riazkhan1012.github.io/foodmap.html"
+                       style="display:inline-block;padding:12px 24px;font-size:0.78rem;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;color:#f0ece3;text-decoration:none;">
+                      Go to Dashboard
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0;font-size:0.95rem;line-height:1.8;color:#4a4540;">Do contact us if you have any questions.</p>
+            </td>
+          </tr>
+
+          <!-- Divider -->
+          <tr>
+            <td style="padding:0 36px;"><hr style="border:none;border-top:1px solid #d8d3c8;margin:0;"/></td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 36px;">
+              <p style="margin:0 0 6px;font-size:0.85rem;line-height:1.8;color:#4a4540;">Kindest regards,</p>
+              <p style="margin:0 0 16px;font-family:Georgia,serif;font-size:1.1rem;color:#1a1814;"><strong>Tariq Khan</strong></p>
+              <p style="margin:0;font-size:0.72rem;color:#8a8070;line-height:1.7;">
+                If you did not create this account, you can safely ignore this email.<br/>
+                This link expires in 24 hours.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
